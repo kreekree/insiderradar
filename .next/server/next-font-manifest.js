@@ -1,1 +1,0 @@
-self.__NEXT_FONT_MANIFEST='{"pages":{},"app":{"/Users/shukreeabuwi/AI Daily Projects - Trend Chaser/insiderradar/app/layout":["static/media/bb3ef058b751a6ad-s.p.woff2"]},"appUsingSizeAdjust":true,"pagesUsingSizeAdjust":false}';
