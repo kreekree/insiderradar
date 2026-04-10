@@ -1,4 +1,8 @@
 // api/insider.js — Fetch Form 4 insider trades for a given issuer CIK
+//
+// EDGAR EFTS _id format: "{accessionNo}:{xmlFilename}"
+// e.g. "0001347842-05-000004:edgar.xml"
+// _source.ciks[0] = filer (insider) CIK, ciks[1] = issuer CIK
 
 const UA = 'InsiderRadar contact@insiderradar.com';
 
@@ -22,91 +26,49 @@ function xmlBlocks(xml, tag) {
   return blocks;
 }
 
-// Step 1: EDGAR company search Atom feed — finds Form 4s WHERE this company is the ISSUER
+// Step 1: Get recent Form 4 filings via EFTS full-text search
 async function getForm4Filings(cikPadded) {
-  const url = `https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${cikPadded}&type=4&dateb=&owner=include&count=20&search_text=&output=atom`;
-  console.log('[insider] Fetching:', url);
+  const startdt = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  const url = `https://efts.sec.gov/LATEST/search-index?q=%22${cikPadded}%22&forms=4&dateRange=custom&startdt=${startdt}&from=0&size=20`;
+  console.log('[insider] EFTS:', url);
+
   const res = await fetch(url, { headers: { 'User-Agent': UA } });
-  if (!res.ok) throw new Error(`EDGAR Atom: ${res.status}`);
-  const atom = await res.text();
+  if (!res.ok) throw new Error(`EFTS: ${res.status}`);
+  const data = await res.json();
 
-  // Log enough of the raw feed to diagnose structure
-  console.log('[insider] Atom length:', atom.length);
-  console.log('[insider] Atom[0-600]:', atom.substring(0, 600));
+  const hits = data.hits?.hits || [];
+  console.log('[insider] hits:', hits.length);
 
-  const filings = [];
-  const entryRe = /<entry>([\s\S]*?)<\/entry>/gi;
-  let m;
+  return hits.map(hit => {
+    // _id is "{accNo}:{xmlFilename}" — split on first colon only
+    const colonIdx = hit._id.indexOf(':');
+    const accNo = colonIdx > 0 ? hit._id.slice(0, colonIdx) : hit._id;
+    const xmlFilename = colonIdx > 0 ? hit._id.slice(colonIdx + 1) : null;
+    const accNoDashes = accNo.replace(/-/g, '');
 
-  while ((m = entryRe.exec(atom)) !== null && filings.length < 15) {
-    const entry = m[1];
-    console.log('[insider] entry[0-400]:', entry.substring(0, 400));
+    // ciks[0] = filer (the insider who submitted), ciks[1] = issuer (the company)
+    const filerCikPadded = (hit._source?.ciks || [])[0] || accNoDashes.slice(0, 10);
+    const filerCik = filerCikPadded.replace(/^0+/, '') || filerCikPadded;
 
-    // Try to find an Archives filing URL (contains /Archives/edgar/data/{cik}/{accNo}/)
-    const archivesRe = /https?:\/\/[^"'\s]*\/Archives\/edgar\/data\/(\d+)\/(\d{18})\/([^"'\s<>]*)/i;
-    const archivesMatch = entry.match(archivesRe);
+    const date = hit._source?.file_date || hit._source?.period_ending || '';
 
-    // Extract accession number in dash format: XXXXXXXXXX-YY-ZZZZZZ
-    const accRe = /(\d{10}-\d{2}-\d{6})/;
-    const accMatch = entry.match(accRe);
+    const xmlUrl = xmlFilename
+      ? `https://www.sec.gov/Archives/edgar/data/${filerCik}/${accNoDashes}/${xmlFilename}`
+      : null;
 
-    // Extract date
-    const dateMatch = entry.match(/<filing-date>([^<]+)<\/filing-date>/i)
-                   || entry.match(/<updated>(\d{4}-\d{2}-\d{2})/i);
-    const date = dateMatch ? dateMatch[1].trim() : '';
-
-    if (archivesMatch) {
-      const filerCik = archivesMatch[1];
-      const accNoDashes = archivesMatch[2];
-      const accNo = `${accNoDashes.slice(0,10)}-${accNoDashes.slice(10,12)}-${accNoDashes.slice(12)}`;
-      console.log('[insider] found via archives URL:', filerCik, accNo, date);
-      filings.push({ filerCik, accNoDashes, accNo, date });
-    } else if (accMatch) {
-      // Build from accession number: first 10 digits = filer CIK
-      const accNo = accMatch[1];
-      const accNoDashes = accNo.replace(/-/g, '');
-      const filerCik = accNoDashes.slice(0, 10).replace(/^0+/, '') || accNoDashes.slice(0, 10);
-      console.log('[insider] found via accNo fallback:', filerCik, accNo, date);
-      filings.push({ filerCik, accNoDashes, accNo, date });
-    } else {
-      console.log('[insider] no match in entry');
-    }
-  }
-
-  console.log('[insider] Total filings:', filings.length);
-  return filings;
+    console.log('[insider] filing:', accNo, filerCik, xmlFilename, date);
+    return { filerCik, accNoDashes, accNo, xmlUrl, date };
+  });
 }
 
-// Step 2: Get the XML file URL from the filing index
-async function getXmlUrlFromIndex(filing) {
-  const jsonUrl = `https://www.sec.gov/Archives/edgar/data/${filing.filerCik}/${filing.accNoDashes}/${filing.accNo}-index.json`;
-  console.log('[insider] index.json:', jsonUrl);
-  try {
-    const res = await fetch(jsonUrl, { headers: { 'User-Agent': UA } });
-    if (!res.ok) {
-      console.log('[insider] index.json status:', res.status);
-      return null;
-    }
-    const idx = await res.json();
-    const items = idx.directory?.item || [];
-    const xmlFile = items.find(f =>
-      f.name.endsWith('.xml') &&
-      !f.name.toLowerCase().includes('index') &&
-      !f.name.match(/^R\d/)
-    );
-    if (!xmlFile) return null;
-    return `https://www.sec.gov/Archives/edgar/data/${filing.filerCik}/${filing.accNoDashes}/${xmlFile.name}`;
-  } catch (e) {
-    console.log('[insider] index.json error:', e.message);
-    return null;
-  }
-}
-
-// Step 3: Parse Form 4 XML for transactions
+// Step 2: Parse Form 4 XML for transactions
 async function parseForm4Xml(xmlUrl, filingDate) {
   try {
     const res = await fetch(xmlUrl, { headers: { 'User-Agent': UA } });
-    if (!res.ok) return [];
+    if (!res.ok) {
+      console.log('[insider] XML', res.status, xmlUrl.split('/').slice(-1)[0]);
+      return [];
+    }
     const xml = await res.text();
 
     const ownerName    = xmlVal(xml, 'rptOwnerName') || 'Unknown';
@@ -118,7 +80,7 @@ async function parseForm4Xml(xmlUrl, filingDate) {
     const period       = xmlVal(xml, 'periodOfReport') || filingDate;
 
     const blocks = xmlBlocks(xml, 'nonDerivativeTransaction');
-    console.log('[insider]', ownerName, blocks.length, 'blocks');
+    console.log('[insider]', ownerName, '→', blocks.length, 'txns');
 
     const transactions = [];
     for (const block of blocks) {
@@ -130,16 +92,21 @@ async function parseForm4Xml(xmlUrl, filingDate) {
       const security    = xmlVal(block, 'securityTitle') || 'Common Stock';
       const acqDisp     = xmlVal(block, 'transactionAcquiredDisposedCode') || '';
       if (!shares) continue;
-      transactions.push({ ownerName, title: officerTitle, ticker: issuerTicker, date,
+      transactions.push({
+        ownerName, title: officerTitle, ticker: issuerTicker, date,
         code, label: TX_CODE[code] || code, shares, price,
-        value: Math.round(shares * price), sharesAfter, security, acqDisp });
+        value: Math.round(shares * price), sharesAfter, security, acqDisp
+      });
     }
     return transactions;
   } catch (e) {
-    console.log('[insider] parseXml error:', e.message);
+    console.log('[insider] parse error:', e.message);
     return [];
   }
 }
+
+// Small delay helper to stay under SEC rate limit (10 req/s)
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 export default async function handler(req, res) {
   const cik = (req.query.cik || '').replace(/^0+/, '');
@@ -156,19 +123,19 @@ export default async function handler(req, res) {
     ]);
     if (!subRes.ok) throw new Error('submissions fetch failed');
     const sub = await subRes.json();
+    console.log('[insider]', sub.name, filings.length, 'filings');
 
-    const results = await Promise.all(
-      filings.map(async f => {
-        try {
-          const xmlUrl = await getXmlUrlFromIndex(f);
-          if (!xmlUrl) return [];
-          return await parseForm4Xml(xmlUrl, f.date);
-        } catch { return []; }
-      })
-    );
+    // Process sequentially to avoid SEC rate limiting (429)
+    const trades = [];
+    for (const f of filings) {
+      if (!f.xmlUrl) continue;
+      const txns = await parseForm4Xml(f.xmlUrl, f.date);
+      trades.push(...txns);
+      await sleep(150); // ~6 req/s — comfortably under 10 req/s limit
+    }
 
-    const trades = results.flat().sort((a, b) => (b.date > a.date ? 1 : -1));
-    console.log('[insider] trades:', trades.length);
+    trades.sort((a, b) => (b.date > a.date ? 1 : -1));
+    console.log('[insider] total trades:', trades.length);
 
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=600');
     return res.json({ company: sub.name, cik, ticker: sub.tickers?.[0] || '', trades });
