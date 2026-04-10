@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InsiderRadar — Free SEC Insider Trading Tracker &amp; Form 4 Monitor</title>
+  <meta name="description" content="Track insider buys and sells from SEC Form 4 filings in real time. Free SEC insider trading tracker — search any US stock ticker for executive purchases, disposals, and unusual activity." />
+  <link rel="canonical" href="https://insiderradar.com/" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="InsiderRadar — Free SEC Insider Trading Tracker" />
+  <meta property="og:description" content="Live Form 4 insider trades for any US stock. See who's buying and selling before the crowd." />
+  <meta property="og:url" content="https://insiderradar.com/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://insiderradar.com/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="InsiderRadar — Free SEC Insider Trading Tracker" />
+  <meta name="twitter:description" content="Live Form 4 insider trades for any US stock. Free, no signup required." />
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=NEXT_PUBLIC_GA_ID"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'NEXT_PUBLIC_GA_ID');
+  </script>
+
+  <!-- Umami Analytics -->
+  <script async defer data-website-id="NEXT_PUBLIC_UMAMI_ID" src="https://analytics.umami.is/script.js"></script>
+
+  <!-- Ezoic -->
+  <script src="//www.ezojs.com/ezoic/sa.min.js" async></script>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "InsiderRadar",
+    "url": "https://insiderradar.com/",
+    "description": "Free SEC insider trading tracker — search any US stock to see executive Form 4 filings in real time.",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "author": { "@type": "Organization", "name": "InsiderRadar" }
+  }
+  </script>
+
+  <style>
+    .badge-buy  { @apply bg-emerald-100 text-emerald-800 font-semibold text-xs px-2 py-0.5 rounded; }
+    .badge-sell { @apply bg-red-100 text-red-700 font-semibold text-xs px-2 py-0.5 rounded; }
+    .badge-unusual { @apply bg-amber-100 text-amber-800 font-semibold text-xs px-2 py-0.5 rounded; }
+
+    .sortable:hover { cursor: pointer; }
+    .sortable::after { content: ' ↕'; opacity: 0.4; }
+    .sortable.asc::after  { content: ' ↑'; opacity: 1; }
+    .sortable.desc::after { content: ' ↓'; opacity: 1; }
+
+    #results-section { display: none; }
+    .row-enter { animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+    .bar-buy  { background: #10b981; }
+    .bar-sell { background: #ef4444; }
+    .chart-bar { transition: width 0.6s ease; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans">
+
+  <!-- Ezoic ad: above the fold -->
+  <div id="ezoic-pub-ad-placeholder-101"></div>
+
+  <!-- Nav -->
+  <nav class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-14">
+      <a href="/" class="flex items-center gap-2 font-bold text-lg">
+        <span class="text-emerald-400">&#9679;</span>
+        <span class="text-white">Insider<span class="text-emerald-400">Radar</span></span>
+      </a>
+      <div class="hidden md:flex items-center gap-6 text-sm text-slate-300">
+        <a href="/" class="text-white font-medium">Tracker</a>
+        <a href="/unusual-activity" class="hover:text-white transition">Unusual Activity</a>
+        <a href="/fund-tracker" class="hover:text-white transition">Fund Tracker</a>
+        <a href="/how-to-read-form4-13f" class="hover:text-white transition">Learn</a>
+        <a href="/blog" class="hover:text-white transition">Blog</a>
+        <a href="/faq" class="hover:text-white transition">FAQ</a>
+      </div>
+      <!-- Mobile menu button -->
+      <button id="menu-btn" class="md:hidden text-slate-400 hover:text-white" aria-label="Menu">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-slate-900 border-t border-slate-800 px-4 pb-4">
+      <div class="flex flex-col gap-3 pt-3 text-sm text-slate-300">
+        <a href="/" class="hover:text-white">Tracker</a>
+        <a href="/unusual-activity" class="hover:text-white">Unusual Activity</a>
+        <a href="/fund-tracker" class="hover:text-white">Fund Tracker</a>
+        <a href="/how-to-read-form4-13f" class="hover:text-white">Learn</a>
+        <a href="/blog" class="hover:text-white">Blog</a>
+        <a href="/faq" class="hover:text-white">FAQ</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="bg-gradient-to-b from-slate-900 to-slate-950 py-12 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <div class="inline-flex items-center gap-2 bg-emerald-950 border border-emerald-800 text-emerald-400 text-xs px-3 py-1 rounded-full mb-4">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        Live from SEC EDGAR — Updated within 48 hours of every trade
+      </div>
+      <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4 leading-tight">
+        The Insiders Always Knew.<br class="hidden sm:block" /> Now You Do Too.
+      </h1>
+      <p class="text-slate-400 text-lg mb-8 max-w-2xl mx-auto">
+        Every CEO buy. Every flagged cluster. Every Form 4 they had to file within 48 hours. It's all public government data. It's all free. You just needed someone to surface it.
+      </p>
+
+      <!-- Search bar -->
+      <div class="flex gap-3 max-w-md mx-auto">
+        <div class="relative flex-1">
+          <input
+            id="ticker-input"
+            type="text"
+            placeholder="Ticker symbol — AAPL, TSLA, NVDA…"
+            maxlength="5"
+            autocomplete="off"
+            autocapitalize="characters"
+            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 uppercase text-sm"
+          />
+          <div id="ticker-status" class="absolute right-3 top-3 text-xs hidden"></div>
+        </div>
+        <button
+          id="search-btn"
+          class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-5 py-3 rounded-lg transition text-sm whitespace-nowrap"
+        >
+          Search
+        </button>
+      </div>
+      <p id="search-error" class="text-red-400 text-xs mt-2 hidden"></p>
+    </div>
+  </header>
+
+  <!-- Company info card (shown after search) -->
+  <div id="company-card" class="max-w-6xl mx-auto px-4 mt-6 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-wrap items-center gap-4">
+      <div>
+        <span id="co-ticker" class="text-2xl font-extrabold text-white"></span>
+        <span id="co-name" class="text-slate-400 ml-2 text-sm"></span>
+      </div>
+      <div class="ml-auto flex gap-3 text-sm">
+        <div class="text-center">
+          <div id="stat-buy-count" class="text-emerald-400 font-bold text-lg">—</div>
+          <div class="text-slate-500 text-xs">Buys (90d)</div>
+        </div>
+        <div class="text-center">
+          <div id="stat-sell-count" class="text-red-400 font-bold text-lg">—</div>
+          <div class="text-slate-500 text-xs">Sells (90d)</div>
+        </div>
+        <div class="text-center">
+          <div id="stat-total-val" class="text-white font-bold text-lg">—</div>
+          <div class="text-slate-500 text-xs">Net Value</div>
+        </div>
+        <div id="unusual-badge-wrap" class="hidden text-center">
+          <div class="bg-amber-100 text-amber-800 font-bold text-lg px-2 rounded">!</div>
+          <div class="text-slate-500 text-xs">Unusual</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ezoic ad mid-page -->
+  <div class="max-w-6xl mx-auto px-4 mt-4">
+    <div id="ezoic-pub-ad-placeholder-102"></div>
+  </div>
+
+  <!-- Results section -->
+  <main id="results-section" class="max-w-6xl mx-auto px-4 py-6">
+
+    <!-- Loading state -->
+    <div id="loading" class="text-center py-16 hidden">
+      <div class="inline-block w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mb-3"></div>
+      <p class="text-slate-400 text-sm">Pulling Form 4 filings from SEC EDGAR — give it a second…</p>
+    </div>
+
+    <!-- Chart + Table grid -->
+    <div id="data-grid" class="hidden">
+
+      <!-- Mini chart -->
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 mb-6">
+        <h2 class="text-sm font-semibold text-slate-400 mb-3 uppercase tracking-wide">Buy / Sell Activity (recent)</h2>
+        <div id="chart-container" class="space-y-2"></div>
+        <div class="flex gap-4 mt-3 text-xs text-slate-500">
+          <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-emerald-500"></span> Buy</span>
+          <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-red-500"></span> Sell</span>
+        </div>
+      </div>
+
+      <!-- Trades table -->
+      <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+        <div class="flex items-center justify-between px-4 py-3 border-b border-slate-800">
+          <h2 class="font-semibold text-white text-sm">Recent Insider Transactions</h2>
+          <span id="trade-count" class="text-xs text-slate-500"></span>
+        </div>
+
+        <!-- Filter bar -->
+        <div class="px-4 py-2 border-b border-slate-800 flex gap-2 flex-wrap">
+          <button data-filter="ALL"  class="filter-btn active text-xs px-3 py-1 rounded-full bg-slate-700 text-white">All</button>
+          <button data-filter="BUY"  class="filter-btn text-xs px-3 py-1 rounded-full bg-slate-800 text-slate-400 hover:bg-slate-700">Buys Only</button>
+          <button data-filter="SELL" class="filter-btn text-xs px-3 py-1 rounded-full bg-slate-800 text-slate-400 hover:bg-slate-700">Sells Only</button>
+          <button data-filter="UNUSUAL" class="filter-btn text-xs px-3 py-1 rounded-full bg-slate-800 text-slate-400 hover:bg-slate-700">&#9888; Unusual</button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="text-xs text-slate-500 uppercase border-b border-slate-800 bg-slate-900/50">
+              <tr>
+                <th class="sortable px-4 py-3 text-left" data-col="date">Date</th>
+                <th class="px-4 py-3 text-left">Insider</th>
+                <th class="px-4 py-3 text-left">Title</th>
+                <th class="px-4 py-3 text-center">Type</th>
+                <th class="sortable px-4 py-3 text-right" data-col="shares">Shares</th>
+                <th class="sortable px-4 py-3 text-right" data-col="price">Price</th>
+                <th class="sortable px-4 py-3 text-right" data-col="value">Value</th>
+              </tr>
+            </thead>
+            <tbody id="trades-tbody" class="divide-y divide-slate-800/50"></tbody>
+          </table>
+        </div>
+        <div id="no-trades" class="hidden text-center py-10 text-slate-500 text-sm">Nothing matches that filter — try <span class="text-slate-400">All</span> to see the full picture.</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Explainer content (always visible below search) -->
+  <section class="max-w-3xl mx-auto px-4 py-12">
+    <h2 class="text-2xl font-bold text-white mb-4">The Information Wall Street Doesn't Want You to Find</h2>
+    <p class="text-slate-400 mb-4 leading-relaxed">
+      Here's something most retail investors don't know: every time a CEO, CFO, or board member buys or sells their own company's stock, they are legally required to file a disclosure with the SEC within <strong class="text-slate-200">48 hours</strong>. It's called a <strong class="text-slate-200">Form 4</strong> — and it's been sitting on a free government database since 1996. Hedge fund compliance desks monitor it daily. You probably weren't told it existed.
+    </p>
+    <p class="text-slate-400 mb-4 leading-relaxed">
+      When a CEO spends <em>their own money</em> buying stock at market price, that's not a guess. That's conviction. They know the pipeline, the deal flow, the numbers before they're public. When multiple executives buy within the same 30-day window? That's a pattern worth watching. InsiderRadar flags it automatically — no $200/month subscription required.
+    </p>
+    <p class="text-slate-400 mb-4 leading-relaxed">
+      Every data point on this site comes directly from the <a href="https://www.sec.gov/cgi-bin/browse-edgar" target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:underline">SEC EDGAR database</a> — the same government source that institutional desks and activist funds pay analysts six figures to monitor. We just made it searchable, sortable, and free. Enter any US ticker above and see what the insiders are doing right now.
+    </p>
+    <p class="text-slate-400 leading-relaxed">
+      Trades are displayed with full context: date, insider name, title, transaction type (buy vs. sell vs. administrative), share count, price paid, and total value. Transactions flagged <span class="bg-amber-900 text-amber-300 text-xs px-1.5 py-0.5 rounded font-semibold">&#9888; UNUSUAL</span> represent open-market purchases exceeding $500,000 — the kind of move that makes institutional analysts pay attention.
+    </p>
+
+    <div class="grid md:grid-cols-3 gap-4 mt-8">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+        <div class="text-emerald-400 text-2xl mb-2">&#128196;</div>
+        <h3 class="font-semibold text-white mb-1">Form 4 — 48 Hours or Bust</h3>
+        <p class="text-slate-400 text-sm">Insiders must report every trade within 2 business days. We parse those filings straight from SEC EDGAR and surface them here — no middleman, no markup.</p>
+      </div>
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+        <div class="text-amber-400 text-2xl mb-2">&#9888;</div>
+        <h3 class="font-semibold text-white mb-1">Flagged. Not Just Listed.</h3>
+        <p class="text-slate-400 text-sm">Open-market purchases over $500K get flagged as unusual — because a CEO writing a personal check for half a million dollars at market price is not routine. Watch those trades.</p>
+      </div>
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+        <div class="text-blue-400 text-2xl mb-2">&#127974;</div>
+        <h3 class="font-semibold text-white mb-1">Follow the Funds Too</h3>
+        <p class="text-slate-400 text-sm">Hedge funds with $100M+ must disclose every stock position quarterly. Use our <a href="/fund-tracker" class="text-blue-400 hover:underline">13F tracker</a> to see where the smart money is allocated.</p>
+      </div>
+    </div>
+
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a href="/unusual-activity" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold px-4 py-2 rounded-lg text-sm transition">&#9888; See What's Flagged Right Now &rarr;</a>
+      <a href="/fund-tracker" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm transition">Follow the Hedge Funds &rarr;</a>
+      <a href="/how-to-read-form4-13f" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm transition">Learn to Read Form 4 &rarr;</a>
+    </div>
+  </section>
+
+  <!-- Ezoic ad bottom -->
+  <div class="max-w-6xl mx-auto px-4 pb-4">
+    <div id="ezoic-pub-ad-placeholder-103"></div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 border-t border-slate-800 py-10 px-4 mt-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="grid md:grid-cols-4 gap-8 mb-8">
+        <div>
+          <div class="font-bold text-white text-lg mb-3">Insider<span class="text-emerald-400">Radar</span></div>
+          <p class="text-slate-500 text-xs leading-relaxed">Free SEC insider trading and institutional fund flow tracker. Data sourced directly from SEC EDGAR.</p>
+        </div>
+        <div>
+          <div class="text-slate-400 font-semibold text-xs uppercase tracking-wide mb-3">Tools</div>
+          <ul class="space-y-2 text-sm text-slate-400">
+            <li><a href="/" class="hover:text-white transition">Insider Tracker</a></li>
+            <li><a href="/unusual-activity" class="hover:text-white transition">Unusual Activity</a></li>
+            <li><a href="/fund-tracker" class="hover:text-white transition">Fund Tracker</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="text-slate-400 font-semibold text-xs uppercase tracking-wide mb-3">Learn</div>
+          <ul class="space-y-2 text-sm text-slate-400">
+            <li><a href="/how-to-read-form4-13f" class="hover:text-white transition">How to Read Form 4 &amp; 13F</a></li>
+            <li><a href="/blog" class="hover:text-white transition">Blog</a></li>
+            <li><a href="/faq" class="hover:text-white transition">FAQ</a></li>
+            <li><a href="/methodology" class="hover:text-white transition">Data &amp; Methodology</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="text-slate-400 font-semibold text-xs uppercase tracking-wide mb-3">Company</div>
+          <ul class="space-y-2 text-sm text-slate-400">
+            <li><a href="/about" class="hover:text-white transition">About</a></li>
+            <li><a href="/contact" class="hover:text-white transition">Contact</a></li>
+            <li><a href="/privacy" class="hover:text-white transition">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-slate-800 pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
+        <p class="text-slate-600 text-xs">&copy; 2026 InsiderRadar.com — Data sourced from <a href="https://www.sec.gov/cgi-bin/browse-edgar" target="_blank" rel="noopener noreferrer" class="hover:text-slate-400">SEC EDGAR</a></p>
+        <p class="text-slate-600 text-xs text-center md:text-right">This site is for informational purposes only. Not legal, financial, or investment advice.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ── Utilities ────────────────────────────────────────────────
+    function sanitize(str) {
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+    function fmtNum(n) {
+      return Number(n).toLocaleString();
+    }
+    function fmtMoney(n) {
+      if (!n) return '$—';
+      if (n >= 1e9) return '$' + (n / 1e9).toFixed(1) + 'B';
+      if (n >= 1e6) return '$' + (n / 1e6).toFixed(1) + 'M';
+      if (n >= 1e3) return '$' + (n / 1e3).toFixed(0) + 'K';
+      return '$' + fmtNum(n);
+    }
+    function fmtPrice(p) {
+      return p ? '$' + Number(p).toFixed(2) : '$—';
+    }
+
+    // ── State ─────────────────────────────────────────────────────
+    let allTrades = [];
+    let sortCol = 'date';
+    let sortDir = 'desc';
+    let activeFilter = 'ALL';
+
+    // Heuristic: unusual = value > $500K for a buy
+    function isUnusual(t) { return t.label === 'BUY' && t.value >= 500000; }
+
+    // ── DOM refs ──────────────────────────────────────────────────
+    const tickerInput  = document.getElementById('ticker-input');
+    const searchBtn    = document.getElementById('search-btn');
+    const searchError  = document.getElementById('search-error');
+    const companyCard  = document.getElementById('company-card');
+    const resultsSection = document.getElementById('results-section');
+    const loading      = document.getElementById('loading');
+    const dataGrid     = document.getElementById('data-grid');
+    const noTrades     = document.getElementById('no-trades');
+    const tradesTbody  = document.getElementById('trades-tbody');
+    const tradeCount   = document.getElementById('trade-count');
+    const chartContainer = document.getElementById('chart-container');
+    const menuBtn      = document.getElementById('menu-btn');
+    const mobileMenu   = document.getElementById('mobile-menu');
+
+    // ── Mobile menu ───────────────────────────────────────────────
+    menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+
+    // ── Search ────────────────────────────────────────────────────
+    tickerInput.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+    searchBtn.addEventListener('click', doSearch);
+
+    async function doSearch() {
+      const ticker = tickerInput.value.toUpperCase().trim().replace(/[^A-Z]/g, '');
+      if (!ticker) { showError('Enter a ticker symbol.'); return; }
+      if (ticker.length > 5) { showError('Ticker must be 1–5 letters.'); return; }
+
+      hideError();
+      searchBtn.disabled = true;
+      searchBtn.textContent = '…';
+      resultsSection.style.display = 'block';
+      companyCard.classList.add('hidden');
+      loading.classList.remove('hidden');
+      dataGrid.classList.add('hidden');
+
+      try {
+        const res = await fetch(`/api/ticker?ticker=${ticker}`);
+        const company = await res.json();
+        if (!res.ok) { showError(company.error || 'Ticker not found.'); return; }
+
+        // Load insider trades
+        const res2 = await fetch(`/api/insider?cik=${company.cik}`);
+        const data = await res2.json();
+        if (!res2.ok) { showError(data.error || 'Failed to load trades.'); return; }
+
+        allTrades = data.trades || [];
+        renderCompanyCard(company, data);
+        renderChart(allTrades);
+        renderTable();
+
+        loading.classList.add('hidden');
+        dataGrid.classList.remove('hidden');
+        companyCard.classList.remove('hidden');
+
+      } catch (e) {
+        showError('Network error. Please try again.');
+      } finally {
+        searchBtn.disabled = false;
+        searchBtn.textContent = 'Search';
+      }
+    }
+
+    function showError(msg) {
+      loading.classList.add('hidden');
+      searchError.textContent = msg;
+      searchError.classList.remove('hidden');
+      searchBtn.disabled = false;
+      searchBtn.textContent = 'Search';
+    }
+    function hideError() {
+      searchError.classList.add('hidden');
+    }
+
+    // ── Company card ───────────────────────────────────────────────
+    function renderCompanyCard(company, data) {
+      document.getElementById('co-ticker').textContent = company.ticker;
+      document.getElementById('co-name').textContent = sanitize(data.company || company.company);
+
+      const recent = allTrades.filter(t => {
+        const d = new Date(t.date);
+        return d >= new Date(Date.now() - 90 * 864e5);
+      });
+      const buys  = recent.filter(t => t.label === 'BUY');
+      const sells = recent.filter(t => t.label === 'SELL');
+      const netVal = buys.reduce((s, t) => s + t.value, 0) - sells.reduce((s, t) => s + t.value, 0);
+      const hasUnusual = allTrades.some(isUnusual);
+
+      document.getElementById('stat-buy-count').textContent  = buys.length;
+      document.getElementById('stat-sell-count').textContent = sells.length;
+      document.getElementById('stat-total-val').textContent  = fmtMoney(Math.abs(netVal));
+      document.getElementById('stat-total-val').className = netVal >= 0 ? 'text-emerald-400 font-bold text-lg' : 'text-red-400 font-bold text-lg';
+
+      const unusualWrap = document.getElementById('unusual-badge-wrap');
+      if (hasUnusual) unusualWrap.classList.remove('hidden');
+      else unusualWrap.classList.add('hidden');
+    }
+
+    // ── Chart ────────────────────────────────────────────────────
+    function renderChart(trades) {
+      // Group by month, show buy vs sell bar
+      const months = {};
+      trades.forEach(t => {
+        const mo = (t.date || '').slice(0, 7);
+        if (!mo) return;
+        if (!months[mo]) months[mo] = { buy: 0, sell: 0 };
+        if (t.label === 'BUY')  months[mo].buy  += t.value || 0;
+        if (t.label === 'SELL') months[mo].sell += t.value || 0;
+      });
+
+      const entries = Object.entries(months).sort((a, b) => a[0] > b[0] ? 1 : -1).slice(-6);
+      const maxVal = Math.max(...entries.flatMap(([, v]) => [v.buy, v.sell]), 1);
+
+      chartContainer.innerHTML = entries.map(([mo, v]) => {
+        const buyPct  = Math.round((v.buy  / maxVal) * 100);
+        const sellPct = Math.round((v.sell / maxVal) * 100);
+        return `
+          <div class="flex items-center gap-3 text-xs">
+            <span class="text-slate-500 w-14 shrink-0">${mo.slice(2)}</span>
+            <div class="flex-1 flex flex-col gap-1">
+              ${buyPct  ? `<div class="chart-bar bar-buy  h-2 rounded" style="width:${buyPct}%" title="Buys: ${fmtMoney(v.buy)}"></div>` : ''}
+              ${sellPct ? `<div class="chart-bar bar-sell h-2 rounded" style="width:${sellPct}%" title="Sells: ${fmtMoney(v.sell)}"></div>` : ''}
+            </div>
+            <span class="text-slate-500 w-20 text-right">${fmtMoney(v.buy || v.sell)}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ── Table ─────────────────────────────────────────────────────
+    function getFilteredSorted() {
+      let rows = [...allTrades];
+      if (activeFilter === 'BUY')  rows = rows.filter(t => t.label === 'BUY');
+      if (activeFilter === 'SELL') rows = rows.filter(t => t.label === 'SELL');
+      if (activeFilter === 'UNUSUAL') rows = rows.filter(isUnusual);
+      rows.sort((a, b) => {
+        let va = a[sortCol] ?? 0, vb = b[sortCol] ?? 0;
+        if (sortCol === 'date') { va = a.date || ''; vb = b.date || ''; }
+        return sortDir === 'asc' ? (va > vb ? 1 : -1) : (va < vb ? 1 : -1);
+      });
+      return rows;
+    }
+
+    function renderTable() {
+      const rows = getFilteredSorted();
+      tradeCount.textContent = `${rows.length} transaction${rows.length !== 1 ? 's' : ''}`;
+
+      if (!rows.length) {
+        tradesTbody.innerHTML = '';
+        noTrades.classList.remove('hidden');
+        return;
+      }
+      noTrades.classList.add('hidden');
+
+      tradesTbody.innerHTML = rows.map((t, i) => {
+        const isBuy  = t.label === 'BUY';
+        const unusual = isUnusual(t);
+        const badgeCls = isBuy ? 'bg-emerald-900 text-emerald-300' : 'bg-red-900 text-red-300';
+        return `
+          <tr class="row-enter hover:bg-slate-800/40 transition" style="animation-delay:${i * 20}ms">
+            <td class="px-4 py-3 text-slate-400 text-xs whitespace-nowrap">${sanitize(t.date)}</td>
+            <td class="px-4 py-3 text-white font-medium text-xs">${sanitize(t.ownerName)}</td>
+            <td class="px-4 py-3 text-slate-400 text-xs">${sanitize(t.title)}</td>
+            <td class="px-4 py-3 text-center">
+              <span class="font-semibold text-xs px-2 py-0.5 rounded ${badgeCls}">${sanitize(t.label)}</span>
+              ${unusual ? '<span class="ml-1 bg-amber-900 text-amber-300 font-semibold text-xs px-1.5 py-0.5 rounded">&#9888;</span>' : ''}
+            </td>
+            <td class="px-4 py-3 text-right text-slate-300 text-xs">${fmtNum(t.shares)}</td>
+            <td class="px-4 py-3 text-right text-slate-300 text-xs">${fmtPrice(t.price)}</td>
+            <td class="px-4 py-3 text-right font-semibold text-xs ${isBuy ? 'text-emerald-400' : 'text-red-400'}">${fmtMoney(t.value)}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // ── Sort ──────────────────────────────────────────────────────
+    document.querySelectorAll('.sortable').forEach(th => {
+      th.addEventListener('click', () => {
+        const col = th.dataset.col;
+        if (sortCol === col) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+        else { sortCol = col; sortDir = 'desc'; }
+        document.querySelectorAll('.sortable').forEach(el => el.classList.remove('asc', 'desc'));
+        th.classList.add(sortDir);
+        renderTable();
+      });
+    });
+
+    // ── Filter buttons ────────────────────────────────────────────
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeFilter = btn.dataset.filter;
+        document.querySelectorAll('.filter-btn').forEach(b => {
+          b.classList.remove('active', 'bg-slate-700', 'text-white');
+          b.classList.add('bg-slate-800', 'text-slate-400');
+        });
+        btn.classList.add('active', 'bg-slate-700', 'text-white');
+        btn.classList.remove('bg-slate-800', 'text-slate-400');
+        renderTable();
+      });
+    });
+
+    // ── URL param: ?ticker=AAPL ───────────────────────────────────
+    const urlTicker = new URLSearchParams(location.search).get('ticker');
+    if (urlTicker) {
+      tickerInput.value = urlTicker.toUpperCase();
+      doSearch();
+    }
+  </script>
+</body>
+</html>

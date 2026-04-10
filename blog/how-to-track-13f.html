@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to Track Hedge Fund Positions Using Free SEC 13F Filings</title>
+  <meta name="description" content="Every hedge fund with over $100M in assets must file a 13F quarterly — disclosing every stock position to the public. Here's exactly how to find, read, and use 13F data free from SEC EDGAR." />
+  <link rel="canonical" href="https://insiderradar.com/blog/how-to-track-13f" />
+  <meta property="og:title" content="How to Track Hedge Fund Positions Using Free SEC 13F Filings" />
+  <meta property="og:description" content="Hedge funds file quarterly holdings reports with the SEC. Here's how to read them — and what they actually tell you (and don't)." />
+  <meta property="og:url" content="https://insiderradar.com/blog/how-to-track-13f" />
+  <meta property="og:type" content="article" />
+  <meta property="article:published_time" content="2026-04-10" />
+  <meta property="article:author" content="InsiderRadar" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=NEXT_PUBLIC_GA_ID"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','NEXT_PUBLIC_GA_ID');</script>
+  <script async defer data-website-id="NEXT_PUBLIC_UMAMI_ID" src="https://analytics.umami.is/script.js"></script>
+  <script src="//www.ezojs.com/ezoic/sa.min.js" async></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "How to Track Hedge Fund Positions Using Free SEC 13F Filings",
+    "description": "Every hedge fund with over $100M in assets must publicly disclose their stock holdings every quarter. Here's how to find, read, and use 13F data free from SEC EDGAR.",
+    "url": "https://insiderradar.com/blog/how-to-track-13f",
+    "datePublished": "2026-04-10",
+    "dateModified": "2026-04-10",
+    "author": { "@type": "Organization", "name": "InsiderRadar", "url": "https://insiderradar.com" },
+    "publisher": { "@type": "Organization", "name": "InsiderRadar", "url": "https://insiderradar.com" },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://insiderradar.com/blog/how-to-track-13f" }
+  }
+  </script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans">
+
+  <div id="ezoic-pub-ad-placeholder-101"></div>
+
+  <nav class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-14">
+      <a href="/" class="flex items-center gap-2 font-bold text-lg">
+        <span class="text-emerald-400">&#9679;</span>
+        <span>Insider<span class="text-emerald-400">Radar</span></span>
+      </a>
+      <div class="hidden md:flex items-center gap-6 text-sm text-slate-300">
+        <a href="/" class="hover:text-white transition">Tracker</a>
+        <a href="/unusual-activity" class="hover:text-white transition">Unusual Activity</a>
+        <a href="/fund-tracker" class="hover:text-white transition">Fund Tracker</a>
+        <a href="/how-to-read-form4-13f" class="hover:text-white transition">Learn</a>
+        <a href="/blog" class="text-white font-medium">Blog</a>
+        <a href="/faq" class="hover:text-white transition">FAQ</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="bg-gradient-to-b from-slate-900 to-slate-950 py-12 px-4">
+    <div class="max-w-3xl mx-auto">
+      <div class="flex items-center gap-2 mb-4">
+        <a href="/blog" class="text-slate-500 text-xs hover:text-slate-300 transition">Blog</a>
+        <span class="text-slate-700">/</span>
+        <span class="bg-blue-950 text-blue-400 text-xs px-2 py-0.5 rounded-full">13F Deep Dive</span>
+      </div>
+      <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-4 leading-tight">
+        How to Track Hedge Fund Positions Using Free SEC 13F Filings
+      </h1>
+      <p class="text-slate-400 text-base leading-relaxed mb-6">
+        Renaissance Technologies. Bridgewater. Citadel. These funds spend millions on research to identify the best stocks to own. They're also legally required to disclose those stocks to the public every three months. Here's how to read those disclosures — and exactly what they can and cannot tell you.
+      </p>
+      <div class="flex items-center gap-4 text-xs text-slate-500">
+        <span>By InsiderRadar</span>
+        <span>&#183;</span>
+        <span>April 10, 2026</span>
+        <span>&#183;</span>
+        <span>10 min read</span>
+      </div>
+    </div>
+  </header>
+
+  <article class="max-w-3xl mx-auto px-4 py-10 space-y-8 text-slate-300 text-sm leading-relaxed">
+
+    <div id="ezoic-pub-ad-placeholder-102"></div>
+
+    <section>
+      <h2 class="text-2xl font-bold text-white mb-4">The Law That Forces Hedge Funds to Show Their Cards</h2>
+      <p class="mb-4">
+        In 1975, Congress passed an amendment to the Securities Exchange Act that required any institutional investment manager controlling more than $100 million in qualifying US equity securities to file a quarterly report disclosing their holdings. The form is called 13F-HR (Holdings Report), and it has been publicly available on the SEC's EDGAR database since 1993.
+      </p>
+      <p class="mb-4">
+        What this means in practice: Berkshire Hathaway, Renaissance Technologies, Citadel Advisors, Soros Fund Management, and thousands of other institutions must file a document every quarter telling the world exactly which stocks they own and how many shares. The SEC publishes it for free. No subscription required.
+      </p>
+      <p>
+        Most retail investors have no idea this data exists. The ones who do often use it wrong. This guide will walk you through how to find 13F filings, what each field means, and — critically — how to interpret the data without falling into the traps that catch most people.
+      </p>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-bold text-white mb-4">Who Files 13F? The $100 Million Threshold</h2>
+      <p class="mb-4">
+        The 13F requirement applies to any institutional investment manager that exercises investment discretion over <strong class="text-white">$100 million or more</strong> in Section 13(f) securities — which includes US exchange-listed stocks, ETFs, closed-end funds, and certain options.
+      </p>
+      <p class="mb-4">
+        In practice, this captures a massive range of institutions:
+      </p>
+      <ul class="space-y-2 ml-2">
+        <li class="flex gap-3"><span class="text-blue-400 shrink-0 mt-0.5">&#9679;</span><span>Hedge funds (the ones large enough to hit the $100M threshold)</span></li>
+        <li class="flex gap-3"><span class="text-blue-400 shrink-0 mt-0.5">&#9679;</span><span>Registered investment advisers (RIAs) managing client portfolios</span></li>
+        <li class="flex gap-3"><span class="text-blue-400 shrink-0 mt-0.5">&#9679;</span><span>Mutual fund companies</span></li>
+        <li class="flex gap-3"><span class="text-blue-400 shrink-0 mt-0.5">&#9679;</span><span>Pension funds and endowments</span></li>
+        <li class="flex gap-3"><span class="text-blue-400 shrink-0 mt-0.5">&#9679;</span><span>Family offices</span></li>
+        <li class="flex gap-3"><span class="text-blue-400 shrink-0 mt-0.5">&#9679;</span><span>Banks and insurance companies with equity investment arms</span></li>
+      </ul>
+      <p class="mt-4">
+        One important nuance: a firm can be a 13F filer without managing a hedge fund. Many 13F filers are straightforward long-only managers with no particular edge. When hunting for meaningful signals, focus on known active managers and concentrated funds where portfolio decisions reflect genuine conviction, not passive index replication.
+      </p>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-bold text-white mb-4">The 13F Filing Timeline</h2>
+      <p class="mb-3">
+        13F filings are due within <strong class="text-white">45 calendar days</strong> after the end of each calendar quarter. That means:
+      </p>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border border-slate-800 rounded-xl overflow-hidden">
+          <thead class="bg-slate-800 text-slate-400 text-xs uppercase">
+            <tr>
+              <th class="px-4 py-3 text-left">Quarter End</th>
+              <th class="px-4 py-3 text-left">13F Due By</th>
+              <th class="px-4 py-3 text-left">Max Data Age When Filed</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800 text-slate-300">
+            <tr class="hover:bg-slate-800/30"><td class="px-4 py-3">March 31</td><td class="px-4 py-3">May 15</td><td class="px-4 py-3">45 days</td></tr>
+            <tr class="hover:bg-slate-800/30"><td class="px-4 py-3">June 30</td><td class="px-4 py-3">August 14</td><td class="px-4 py-3">45 days</td></tr>
+            <tr class="hover:bg-slate-800/30"><td class="px-4 py-3">September 30</td><td class="px-4 py-3">November 14</td><td class="px-4 py-3">45 days</td></tr>
+            <tr class="hover:bg-slate-800/30"><td class="px-4 py-3">December 31</td><td class="px-4 py-3">February 14</td><td class="px-4 py-3">45 days</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-4 text-slate-400">
+        The delay is the single most important limitation to internalize. By the time you read the latest 13F, you're seeing a portfolio snapshot from at least 45 days ago — and potentially from as far back as 135 days ago (45 days after a quarter that ended 90 days after the prior filing). A fund could have exited a position entirely and you wouldn't know until next quarter.
+      </p>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-bold text-white mb-4">How to Read a 13F: The InfoTable</h2>
+      <p class="mb-4">
+        A 13F filing consists of two documents: a cover page and the InfoTable — a structured XML file listing every position. Each row in the InfoTable is one position. Here's what each column means:
+      </p>
+      <div class="space-y-3">
+        <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4">
+          <div class="font-bold text-white mb-1">Name of Issuer</div>
+          <p>The company name. May be abbreviated or use legal names that differ from the common name (e.g., "META PLATFORMS INC" instead of "Meta"). Use the CUSIP to confirm identity across filings.</p>
+        </div>
+        <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4">
+          <div class="font-bold text-white mb-1">CUSIP</div>
+          <p>A 9-character alphanumeric identifier unique to each security. This is the most reliable way to match a position across different 13F filings — company names and ticker symbols can change, but CUSIPs are stable. Track CUSIP-level changes between quarters to see additions, exits, and size changes.</p>
+        </div>
+        <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4">
+          <div class="font-bold text-white mb-1">Value (thousands)</div>
+          <p>Fair market value of the position as of the quarter-end date, reported in thousands of dollars. A value of "1,234,567" means $1.234 billion. This is the most useful field for understanding position size and portfolio weight. InsiderRadar automatically multiplies by 1,000 to show the actual dollar value.</p>
+        </div>
+        <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4">
+          <div class="font-bold text-white mb-1">Shares / PRN Amount</div>
+          <p>The number of shares held. Comparing this number between consecutive 13F filings tells you whether a fund added to, reduced, or held a position. A growing share count despite a stable or declining stock price indicates high conviction — the fund is buying more as the price falls.</p>
+        </div>
+        <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4">
+          <div class="font-bold text-white mb-1">Investment Discretion (SOLE / SHARED)</div>
+          <p>SOLE means the manager makes all decisions about this position independently. SHARED means it is co-managed with another entity. Focus on SOLE positions — SHARED positions may represent assets under advisory arrangements where the manager doesn't have full conviction or control.</p>
+        </div>
+        <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4">
+          <div class="font-bold text-white mb-1">Put / Call</div>
+          <p>If present, this column indicates the position is an options contract rather than a direct stock holding. A "CALL" position represents the right to buy shares (bullish). A "PUT" represents the right to sell (often used as a hedge, not necessarily bearish on the underlying). Most 13F holdings are direct stock positions with no Put/Call designation.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-bold text-white mb-4">The Right Way to Use 13F Data</h2>
+      <p class="mb-4">
+        Given the inherent delay, 13F data is most useful for understanding a fund's <strong class="text-white">long-term conviction and investment thesis</strong> rather than for timing trades. Here's how institutional analysts actually use this data:
+      </p>
+
+      <h3 class="text-lg font-semibold text-white mt-5 mb-2">1. Track Changes Quarter-Over-Quarter</h3>
+      <p class="mb-4">
+        The raw holdings are less useful than the <em>delta</em>. What did the fund add? What did it exit? What has it held for 8 consecutive quarters without reducing? Consistent multi-quarter additions to a position suggest the fund is building a conviction thesis, not chasing momentum.
+      </p>
+
+      <h3 class="text-lg font-semibold text-white mt-5 mb-2">2. Focus on Concentration</h3>
+      <p class="mb-4">
+        A position that represents 15% of a fund's entire portfolio is not the same as a position that represents 0.3%. The former is a high-conviction bet the manager has thought deeply about. The latter is a diversification holding. Always calculate position weight as a percentage of total reported AUM — InsiderRadar does this automatically in the <a href="/fund-tracker" class="text-blue-400 hover:underline">Fund Tracker</a>.
+      </p>
+
+      <h3 class="text-lg font-semibold text-white mt-5 mb-2">3. Cross-Reference With Form 4</h3>
+      <p class="mb-4">
+        13F tells you what institutions own. <a href="/" class="text-emerald-400 hover:underline">Form 4</a> tells you what insiders are doing with their own money. When both point in the same direction — institutions increasing positions while insiders are simultaneously buying on the open market — the confluence is a notably stronger signal than either alone.
+      </p>
+
+      <h3 class="text-lg font-semibold text-white mt-5 mb-2">4. Identify New Positions From High-Signal Filers</h3>
+      <p>
+        When a fund known for its research depth (think: a concentrated value fund, an activist, or a multi-year track record manager) establishes a brand-new position, that's more informative than a slight percentage increase in an existing holding. New entries into a portfolio represent a fresh underwriting decision — someone looked at the company and decided it deserved capital for the first time.
+      </p>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-bold text-white mb-4">Critical Limitations: What 13F Won't Tell You</h2>
+
+      <div class="bg-amber-950 border border-amber-800 rounded-xl p-5 mb-6">
+        <p class="text-amber-300 font-semibold mb-2">&#9888; Read This Before Acting on Any 13F</p>
+        <p class="text-amber-200 text-sm">13F filings reveal only long equity positions in US-listed securities. They are a partial picture at best. A fund with $10B in 13F holdings could also have $5B in short positions, $3B in non-US equities, and $2B in credit instruments — none of which appears in the 13F.</p>
+      </div>
+
+      <ul class="space-y-3">
+        <li class="flex gap-3">
+          <span class="text-red-400 shrink-0 font-bold">&#x2717;</span>
+          <span><strong class="text-white">No short positions</strong> — The most famous hedge fund strategy of all time (short selling) is entirely absent from 13F data. A manager could be massively net short a stock they also show as a long position (a pairs trade or hedge).</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-red-400 shrink-0 font-bold">&#x2717;</span>
+          <span><strong class="text-white">No non-US securities</strong> — Foreign stocks, bonds, commodities, currencies, crypto — none of it. A global macro fund's 13F might represent only 20% of its actual risk exposure.</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-red-400 shrink-0 font-bold">&#x2717;</span>
+          <span><strong class="text-white">Up to 135 days stale</strong> — By the time you see it, the trade is ancient history. Momentum strategies, short-term trades, and any position entered or exited within the quarter are invisible.</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-red-400 shrink-0 font-bold">&#x2717;</span>
+          <span><strong class="text-white">Confidential treatment requests</strong> — Funds can apply to the SEC to delay disclosure of sensitive positions (typically activist stakes being built). The SEC often grants these for limited periods, meaning the largest, most market-moving positions may be the ones you <em>don't</em> see.</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-red-400 shrink-0 font-bold">&#x2717;</span>
+          <span><strong class="text-white">The $100M floor</strong> — Smaller, potentially higher-performing managers are not required to file. The 13F universe skews toward large, established institutions.</span>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-bold text-white mb-4">How to Access 13F Data for Free</h2>
+      <p class="mb-4">
+        Option one: <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&type=13F-HR" target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:underline">SEC EDGAR's 13F filing search</a>. Search by company name or CIK, find the most recent 13F-HR filing, open the filing index, and download the InfoTable XML. Free and authoritative. Also requires parsing XML by hand.
+      </p>
+      <p>
+        Option two: <a href="/fund-tracker" class="text-blue-400 hover:underline">InsiderRadar's Fund Tracker</a>. Enter any institutional investor's name — Berkshire, Renaissance, Citadel, Bridgewater — and we fetch their latest 13F, parse the InfoTable XML, and display holdings ranked by value with portfolio weight percentages. Free, no account, same underlying SEC data.
+      </p>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-bold text-white mb-4">The Honest Verdict on "Following" Hedge Funds</h2>
+      <p class="mb-4">
+        13F data is valuable. It is not a trading strategy on its own.
+      </p>
+      <p class="mb-4">
+        The funds worth tracking — concentrated, high-conviction, long-term oriented — tend to build positions over many quarters. By the time you see their first 13F disclosure in a stock, they may have been accumulating for 6 months. That's also when the thesis is most likely to be mature and well-researched. Following a fund's highest-conviction multi-quarter positions has historically been more predictive than following new entries.
+      </p>
+      <p>
+        Use 13F data the way professionals use it: as a lens for identifying what the most patient, research-intensive capital in the world has conviction in — then do your own analysis to decide whether you agree. The smart money is not always right. But knowing where they've placed their bets is undeniably useful information to have.
+      </p>
+    </section>
+
+    <!-- CTA -->
+    <div class="bg-slate-900 border border-blue-900 rounded-2xl p-6 text-center">
+      <p class="text-blue-400 font-bold text-base mb-2">See what hedge funds are holding right now.</p>
+      <p class="text-slate-400 text-sm mb-5">InsiderRadar's Fund Tracker fetches and parses 13F filings directly from SEC EDGAR — free, no account, any fund, any quarter.</p>
+      <div class="flex flex-wrap justify-center gap-3">
+        <a href="/fund-tracker" class="bg-blue-500 hover:bg-blue-400 text-white font-bold px-5 py-2.5 rounded-lg text-sm transition">Open Fund Tracker &rarr;</a>
+        <a href="/" class="bg-slate-800 hover:bg-slate-700 text-white px-5 py-2.5 rounded-lg text-sm transition">Search Insider Trades &rarr;</a>
+      </div>
+    </div>
+
+    <div id="ezoic-pub-ad-placeholder-103"></div>
+
+    <!-- Related articles -->
+    <div class="border-t border-slate-800 pt-8">
+      <p class="text-slate-500 text-xs uppercase tracking-wide mb-4">Continue Reading</p>
+      <div class="grid md:grid-cols-2 gap-4">
+        <a href="/blog/what-is-form-4" class="bg-slate-900 border border-slate-800 rounded-xl p-4 hover:border-emerald-800 transition">
+          <div class="text-emerald-400 text-xs mb-1">Form 4 Guide</div>
+          <div class="font-semibold text-white text-sm">What Is SEC Form 4? Complete Guide to Insider Disclosures</div>
+        </a>
+        <a href="/how-to-read-form4-13f" class="bg-slate-900 border border-slate-800 rounded-xl p-4 hover:border-blue-800 transition">
+          <div class="text-blue-400 text-xs mb-1">Education Guide</div>
+          <div class="font-semibold text-white text-sm">How to Read Form 4 and 13F — Full Reference Guide</div>
+        </a>
+      </div>
+    </div>
+  </article>
+
+  <footer class="bg-slate-900 border-t border-slate-800 py-8 px-4 mt-8">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex flex-wrap gap-4 text-sm text-slate-400">
+        <a href="/" class="hover:text-white">Tracker</a>
+        <a href="/unusual-activity" class="hover:text-white">Unusual Activity</a>
+        <a href="/fund-tracker" class="hover:text-white">Fund Tracker</a>
+        <a href="/blog" class="hover:text-white">Blog</a>
+        <a href="/faq" class="hover:text-white">FAQ</a>
+        <a href="/methodology" class="hover:text-white">Methodology</a>
+        <a href="/privacy" class="hover:text-white">Privacy</a>
+        <a href="/contact" class="hover:text-white">Contact</a>
+      </div>
+      <p class="text-slate-600 text-xs text-center">This site is for informational purposes only. Not financial or investment advice. &copy; 2026 InsiderRadar.com</p>
+    </div>
+  </footer>
+</body>
+</html>

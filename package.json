@@ -1,0 +1,8 @@
+{
+  "name": "insiderradar",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "vercel": "^50.0.0"
+  }
+}

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hedge Fund 13F Holdings Tracker — Free SEC EDGAR Tool | InsiderRadar</title>
+  <meta name="description" content="Track hedge fund and institutional investor holdings from SEC 13F-HR filings. Enter any fund name to see their latest stock positions and quarter-over-quarter changes. Free and no signup required." />
+  <link rel="canonical" href="https://insiderradar.com/fund-tracker" />
+  <meta property="og:title" content="Hedge Fund 13F Holdings Tracker | InsiderRadar" />
+  <meta property="og:description" content="See what hedge funds are buying and selling each quarter — free 13F filing tracker from SEC EDGAR." />
+  <meta property="og:url" content="https://insiderradar.com/fund-tracker" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=NEXT_PUBLIC_GA_ID"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','NEXT_PUBLIC_GA_ID');</script>
+  <script async defer data-website-id="NEXT_PUBLIC_UMAMI_ID" src="https://analytics.umami.is/script.js"></script>
+  <script src="//www.ezojs.com/ezoic/sa.min.js" async></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Hedge Fund 13F Holdings Tracker",
+    "url": "https://insiderradar.com/fund-tracker",
+    "description": "Free SEC 13F-HR filing tracker — search any institutional investor to see their latest stock holdings.",
+    "applicationCategory": "FinanceApplication",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+  <style>
+    .row-enter { animation: fadeIn 0.25s ease; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(3px); } to { opacity:1; transform:none; } }
+    .bar { background:#3b82f6; height:6px; border-radius:3px; transition: width 0.5s ease; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans">
+
+  <div id="ezoic-pub-ad-placeholder-101"></div>
+
+  <!-- Nav -->
+  <nav class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-14">
+      <a href="/" class="flex items-center gap-2 font-bold text-lg">
+        <span class="text-emerald-400">&#9679;</span>
+        <span>Insider<span class="text-emerald-400">Radar</span></span>
+      </a>
+      <div class="hidden md:flex items-center gap-6 text-sm text-slate-300">
+        <a href="/" class="hover:text-white transition">Tracker</a>
+        <a href="/unusual-activity" class="hover:text-white transition">Unusual Activity</a>
+        <a href="/fund-tracker" class="text-white font-medium">Fund Tracker</a>
+        <a href="/how-to-read-form4-13f" class="hover:text-white transition">Learn</a>
+        <a href="/blog" class="hover:text-white transition">Blog</a>
+        <a href="/faq" class="hover:text-white transition">FAQ</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-b from-slate-900 to-slate-950 py-10 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <div class="inline-flex items-center gap-2 bg-blue-950 border border-blue-800 text-blue-400 text-xs px-3 py-1 rounded-full mb-4">
+        <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+        SEC 13F-HR Filings
+      </div>
+      <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-3">Hedge Fund 13F Holdings Tracker</h1>
+      <p class="text-slate-400 text-base mb-8">
+        Every fund with $100M+ in assets is legally required to show you their cards every quarter. Berkshire. Renaissance. Citadel. See exactly what they own — free, directly from <a href="https://www.sec.gov/" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:underline">SEC EDGAR</a>. No subscription. No BS.
+      </p>
+
+      <!-- Fund search -->
+      <div class="flex gap-3 max-w-md mx-auto">
+        <input
+          id="fund-input"
+          type="text"
+          placeholder="Fund name (e.g. Renaissance, Bridgewater)"
+          class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm"
+        />
+        <button
+          id="search-btn"
+          class="bg-blue-500 hover:bg-blue-400 text-white font-bold px-5 py-3 rounded-lg transition text-sm whitespace-nowrap"
+        >
+          Search
+        </button>
+      </div>
+      <p id="search-error" class="text-red-400 text-xs mt-2 hidden"></p>
+
+      <!-- Quick picks -->
+      <div class="mt-4 flex flex-wrap justify-center gap-2">
+        <span class="text-slate-500 text-xs self-center">Try:</span>
+        <button class="quick-pick text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1 rounded-full transition" data-name="Renaissance Technologies">Renaissance Technologies</button>
+        <button class="quick-pick text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1 rounded-full transition" data-name="Berkshire Hathaway">Berkshire Hathaway</button>
+        <button class="quick-pick text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1 rounded-full transition" data-name="Citadel Advisors">Citadel Advisors</button>
+        <button class="quick-pick text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1 rounded-full transition" data-name="Soros Fund Management">Soros Fund Management</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-6">
+
+    <!-- Loading -->
+    <div id="loading" class="hidden text-center py-16">
+      <div class="inline-block w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-3"></div>
+      <p class="text-slate-400 text-sm">Fetching 13F filing from SEC EDGAR…</p>
+    </div>
+
+    <!-- Error -->
+    <div id="error-box" class="hidden bg-red-950 border border-red-800 rounded-xl p-6 text-center">
+      <p class="text-red-400 font-semibold mb-1">Fund not found</p>
+      <p id="error-msg" class="text-red-300 text-sm"></p>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden">
+
+      <!-- Fund card -->
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 mb-6 flex flex-wrap items-center gap-4">
+        <div>
+          <div id="fund-name" class="text-xl font-bold text-white"></div>
+          <div id="fund-meta" class="text-slate-400 text-sm mt-0.5"></div>
+        </div>
+        <div class="ml-auto text-center">
+          <div id="fund-holdings-count" class="text-blue-400 font-bold text-2xl"></div>
+          <div class="text-slate-500 text-xs">Holdings shown</div>
+        </div>
+      </div>
+
+      <div id="ezoic-pub-ad-placeholder-102" class="mb-6"></div>
+
+      <!-- Holdings table -->
+      <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+        <div class="px-4 py-3 border-b border-slate-800 flex items-center justify-between">
+          <h2 class="font-semibold text-white text-sm">Top Holdings</h2>
+          <span class="text-slate-500 text-xs">Values in USD</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="text-xs text-slate-500 uppercase border-b border-slate-800">
+              <tr>
+                <th class="px-4 py-3 text-left">#</th>
+                <th class="px-4 py-3 text-left">Company</th>
+                <th class="px-4 py-3 text-left">Class</th>
+                <th class="px-4 py-3 text-right">Shares</th>
+                <th class="px-4 py-3 text-right">Value</th>
+                <th class="px-4 py-3 text-left pl-6">Weight</th>
+              </tr>
+            </thead>
+            <tbody id="holdings-tbody" class="divide-y divide-slate-800/50"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Explainer -->
+  <section class="max-w-3xl mx-auto px-4 py-10">
+    <h2 class="text-xl font-bold text-white mb-3">The Quarterly Disclosure Wall Street Pays to Watch</h2>
+    <p class="text-slate-400 text-sm mb-4 leading-relaxed">
+      Congress passed Section 13(f) of the Securities Exchange Act in 1975 because institutional money was getting too large to operate in the dark. Any manager controlling $100M+ in US equities must file Form 13F-HR every quarter — listing every stock position, share count, and dollar value. The SEC publishes it publicly within 45 days. Hedge funds pay analysts to track this. You can do it here for free.
+    </p>
+    <p class="text-slate-400 text-sm mb-4 leading-relaxed">
+      The delay is real — up to 45 days after quarter end, which can mean 135 days between what you see and today. The data is a snapshot, not a live feed. Use it to understand conviction and thesis, not to mirror trades tick-for-tick. A fund holding the same position for eight consecutive quarters is telling you something. A new entry from a known deep-value manager is worth understanding.
+    </p>
+    <p class="text-slate-400 text-sm leading-relaxed">
+      Critical limitation: 13F shows <strong class="text-slate-200">long equity only</strong>. No shorts, no non-US, no bonds. A fund could be net short a stock and still show it as a long. Use the <a href="/" class="text-emerald-400 hover:underline">insider trading tracker</a> alongside 13F data — when insiders are buying <em>and</em> institutions are building positions, that's the confluence worth watching. Full explainer: <a href="/how-to-read-form4-13f" class="text-blue-400 hover:underline">how to read 13F filings</a>.
+    </p>
+  </section>
+
+  <div class="max-w-6xl mx-auto px-4 pb-4">
+    <div id="ezoic-pub-ad-placeholder-103"></div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 border-t border-slate-800 py-8 px-4 mt-4">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex flex-wrap gap-4 text-sm text-slate-400">
+        <a href="/" class="hover:text-white">Tracker</a>
+        <a href="/unusual-activity" class="hover:text-white">Unusual Activity</a>
+        <a href="/fund-tracker" class="hover:text-white">Fund Tracker</a>
+        <a href="/blog" class="hover:text-white">Blog</a>
+        <a href="/faq" class="hover:text-white">FAQ</a>
+        <a href="/methodology" class="hover:text-white">Methodology</a>
+        <a href="/privacy" class="hover:text-white">Privacy</a>
+        <a href="/contact" class="hover:text-white">Contact</a>
+      </div>
+      <p class="text-slate-600 text-xs text-center">This site is for informational purposes only. Not financial or investment advice. &copy; 2026 InsiderRadar.com</p>
+    </div>
+  </footer>
+
+  <script>
+    function sanitize(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function fmtNum(n) { return Number(n||0).toLocaleString(); }
+    function fmtMoney(n) {
+      if (!n) return '$—';
+      if (n >= 1e9) return '$'+(n/1e9).toFixed(1)+'B';
+      if (n >= 1e6) return '$'+(n/1e6).toFixed(1)+'M';
+      if (n >= 1e3) return '$'+(n/1e3).toFixed(0)+'K';
+      return '$'+fmtNum(n);
+    }
+
+    const input    = document.getElementById('fund-input');
+    const btn      = document.getElementById('search-btn');
+    const errorP   = document.getElementById('search-error');
+    const loading  = document.getElementById('loading');
+    const errorBox = document.getElementById('error-box');
+    const results  = document.getElementById('results');
+
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+    btn.addEventListener('click', doSearch);
+    document.querySelectorAll('.quick-pick').forEach(b => {
+      b.addEventListener('click', () => { input.value = b.dataset.name; doSearch(); });
+    });
+
+    async function doSearch() {
+      const name = input.value.trim();
+      if (name.length < 2) { errorP.textContent = 'Enter at least 2 characters.'; errorP.classList.remove('hidden'); return; }
+      errorP.classList.add('hidden');
+      btn.disabled = true; btn.textContent = '…';
+
+      loading.classList.remove('hidden');
+      errorBox.classList.add('hidden');
+      results.classList.add('hidden');
+
+      try {
+        const res = await fetch(`/api/fund?name=${encodeURIComponent(name)}`);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Not found');
+
+        document.getElementById('fund-name').textContent = sanitize(data.fund);
+        document.getElementById('fund-meta').textContent =
+          `Period: ${sanitize(data.period || '—')}  ·  Filed: ${sanitize(data.fileDate || '—')}`;
+        document.getElementById('fund-holdings-count').textContent = data.holdings.length;
+
+        const totalVal = data.holdings.reduce((s, h) => s + (h.value || 0), 0);
+        const tbody = document.getElementById('holdings-tbody');
+        tbody.innerHTML = data.holdings.map((h, i) => {
+          const pct = totalVal ? Math.min(100, Math.round((h.value / totalVal) * 100)) : 0;
+          return `
+            <tr class="row-enter hover:bg-slate-800/40 transition" style="animation-delay:${i*15}ms">
+              <td class="px-4 py-3 text-slate-500 text-xs">${i+1}</td>
+              <td class="px-4 py-3 text-white text-xs font-medium">${sanitize(h.nameOfIssuer)}</td>
+              <td class="px-4 py-3 text-slate-400 text-xs">${sanitize(h.titleOfClass)}</td>
+              <td class="px-4 py-3 text-right text-slate-300 text-xs">${fmtNum(h.shares)}</td>
+              <td class="px-4 py-3 text-right font-semibold text-blue-400 text-xs">${fmtMoney(h.value)}</td>
+              <td class="px-4 py-3 pl-6">
+                <div class="flex items-center gap-2">
+                  <div class="bar w-16" style="width:${pct*0.64}rem"></div>
+                  <span class="text-slate-500 text-xs">${pct}%</span>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+        document.getElementById('holdings-tbody').parentElement.parentElement.querySelector('#no-results')?.classList.add('hidden');
+        loading.classList.add('hidden');
+        results.classList.remove('hidden');
+      } catch (e) {
+        loading.classList.add('hidden');
+        document.getElementById('error-msg').textContent = e.message;
+        errorBox.classList.remove('hidden');
+      } finally {
+        btn.disabled = false; btn.textContent = 'Search';
+      }
+    }
+  </script>
+</body>
+</html>

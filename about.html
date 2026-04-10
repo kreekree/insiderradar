@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About InsiderRadar — Free SEC Insider Trading Tracker</title>
+  <meta name="description" content="About InsiderRadar — a free SEC Form 4 and 13F filing tracker built to give retail investors the same insider trading data that Wall Street uses, without a paywall." />
+  <link rel="canonical" href="https://insiderradar.com/about" />
+  <meta property="og:title" content="About InsiderRadar" />
+  <meta property="og:url" content="https://insiderradar.com/about" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=NEXT_PUBLIC_GA_ID"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','NEXT_PUBLIC_GA_ID');</script>
+  <script async defer data-website-id="NEXT_PUBLIC_UMAMI_ID" src="https://analytics.umami.is/script.js"></script>
+  <script src="//www.ezojs.com/ezoic/sa.min.js" async></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans">
+
+  <div id="ezoic-pub-ad-placeholder-101"></div>
+
+  <nav class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-14">
+      <a href="/" class="flex items-center gap-2 font-bold text-lg">
+        <span class="text-emerald-400">&#9679;</span>
+        <span>Insider<span class="text-emerald-400">Radar</span></span>
+      </a>
+      <div class="hidden md:flex items-center gap-6 text-sm text-slate-300">
+        <a href="/" class="hover:text-white transition">Tracker</a>
+        <a href="/unusual-activity" class="hover:text-white transition">Unusual Activity</a>
+        <a href="/fund-tracker" class="hover:text-white transition">Fund Tracker</a>
+        <a href="/how-to-read-form4-13f" class="hover:text-white transition">Learn</a>
+        <a href="/blog" class="hover:text-white transition">Blog</a>
+        <a href="/faq" class="hover:text-white transition">FAQ</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="bg-gradient-to-b from-slate-900 to-slate-950 py-10 px-4">
+    <div class="max-w-3xl mx-auto">
+      <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-3">About InsiderRadar</h1>
+      <p class="text-slate-400 text-base">The insiders always knew. The law just made them tell you. We made it easy to find.</p>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 py-10 space-y-8 text-slate-400 leading-relaxed text-sm">
+
+    <div id="ezoic-pub-ad-placeholder-102"></div>
+
+    <section>
+      <h2 class="text-xl font-bold text-white mb-3">Why We Built This</h2>
+      <p class="mb-4">
+        Since 1996, the SEC has required every corporate insider to publicly disclose their trades within 48 hours. CEO buys. Board sells. CFO option exercises. It's all there on <a href="https://www.sec.gov/cgi-bin/browse-edgar" target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:underline">SEC EDGAR</a> — free, public, updated near-daily. Hedge fund compliance desks monitor it every morning. Most retail investors have never heard of it.
+      </p>
+      <p class="mb-4">
+        Meanwhile, the platforms that make this data usable — WhaleWisdom, Fintel, BamSEC — charge $50 to $200 per month for access to information that is legally public and costs them nothing to obtain. That felt wrong. The information asymmetry between institutional and retail investors is already severe enough without adding a $200/month paywall to public government data.
+      </p>
+      <p>
+        InsiderRadar proxies the SEC's own APIs, parses the raw Form 4 and 13F XML filings, and puts the result in a clean, searchable interface. Free. No account. No upsell. You're no longer on the outside.
+      </p>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-bold text-white mb-3">Data Sources</h2>
+      <ul class="space-y-3">
+        <li class="flex gap-3">
+          <span class="text-emerald-400 mt-0.5 shrink-0">&#9679;</span>
+          <span><strong class="text-slate-200">SEC EDGAR Form 4 Filings</strong> — <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&type=4" target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:underline">sec.gov</a> — All insider trade disclosures published by the SEC within 2 business days of each transaction.</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-emerald-400 mt-0.5 shrink-0">&#9679;</span>
+          <span><strong class="text-slate-200">SEC EDGAR 13F-HR Filings</strong> — <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&type=13F-HR" target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:underline">sec.gov</a> — Quarterly institutional holdings disclosures from investment managers with $100M+ AUM.</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-emerald-400 mt-0.5 shrink-0">&#9679;</span>
+          <span><strong class="text-slate-200">SEC Company Tickers API</strong> — <a href="https://www.sec.gov/files/company_tickers.json" target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:underline">sec.gov/files/company_tickers.json</a> — Official ticker-to-CIK mapping maintained by the SEC.</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-emerald-400 mt-0.5 shrink-0">&#9679;</span>
+          <span><strong class="text-slate-200">SEC EDGAR Submissions API</strong> — <a href="https://data.sec.gov/submissions/" target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:underline">data.sec.gov/submissions/</a> — Company-level filing index used to locate the most recent Form 4 and 13F documents.</span>
+        </li>
+      </ul>
+      <p class="mt-4 text-xs text-slate-500">Last data source verification: April 2026. No third-party data vendors are used. All data is sourced directly from official US government endpoints.</p>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-bold text-white mb-3">What We Are Not</h2>
+      <p class="mb-3">InsiderRadar is a data aggregation and display tool. We are not:</p>
+      <ul class="list-disc list-inside space-y-1 ml-2">
+        <li>A financial advisor or registered investment adviser (RIA)</li>
+        <li>A broker-dealer or trading platform</li>
+        <li>An endorsement or recommendation of any specific stock or fund</li>
+        <li>A real-time trading signal service</li>
+      </ul>
+      <p class="mt-3">All data presented on InsiderRadar is publicly available information sourced from the SEC. Nothing on this site constitutes investment, legal, or financial advice. Always consult a qualified financial professional before making investment decisions.</p>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-bold text-white mb-3">Contact &amp; Feedback</h2>
+      <p>We welcome bug reports, feature requests, and general feedback. Visit our <a href="/contact" class="text-emerald-400 hover:underline">contact page</a> to get in touch. For questions about how our data works, see the <a href="/methodology" class="text-emerald-400 hover:underline">Methodology</a> page or our <a href="/faq" class="text-emerald-400 hover:underline">FAQ</a>.</p>
+    </section>
+
+    <div class="flex flex-wrap gap-3 pt-2">
+      <a href="/" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold px-4 py-2 rounded-lg text-sm transition">Try the Tracker &rarr;</a>
+      <a href="/methodology" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm transition">Data Methodology &rarr;</a>
+    </div>
+  </main>
+
+  <div class="max-w-3xl mx-auto px-4 pb-4">
+    <div id="ezoic-pub-ad-placeholder-103"></div>
+  </div>
+
+  <footer class="bg-slate-900 border-t border-slate-800 py-8 px-4 mt-4">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex flex-wrap gap-4 text-sm text-slate-400">
+        <a href="/" class="hover:text-white">Tracker</a>
+        <a href="/unusual-activity" class="hover:text-white">Unusual Activity</a>
+        <a href="/fund-tracker" class="hover:text-white">Fund Tracker</a>
+        <a href="/blog" class="hover:text-white">Blog</a>
+        <a href="/faq" class="hover:text-white">FAQ</a>
+        <a href="/methodology" class="hover:text-white">Methodology</a>
+        <a href="/privacy" class="hover:text-white">Privacy</a>
+        <a href="/contact" class="hover:text-white">Contact</a>
+      </div>
+      <p class="text-slate-600 text-xs text-center">This site is for informational purposes only. Not financial or investment advice. &copy; 2026 InsiderRadar.com</p>
+    </div>
+  </footer>
+</body>
+</html>

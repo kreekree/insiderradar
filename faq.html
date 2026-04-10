@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FAQ — SEC Insider Trading Tracker Questions Answered | InsiderRadar</title>
+  <meta name="description" content="Frequently asked questions about SEC insider trading data, Form 4 filings, 13F institutional holdings, and how InsiderRadar works. Everything a retail investor needs to know." />
+  <link rel="canonical" href="https://insiderradar.com/faq" />
+  <meta property="og:title" content="FAQ — SEC Insider Trading Questions Answered | InsiderRadar" />
+  <meta property="og:url" content="https://insiderradar.com/faq" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=NEXT_PUBLIC_GA_ID"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','NEXT_PUBLIC_GA_ID');</script>
+  <script async defer data-website-id="NEXT_PUBLIC_UMAMI_ID" src="https://analytics.umami.is/script.js"></script>
+  <script src="//www.ezojs.com/ezoic/sa.min.js" async></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "What is SEC Form 4 and who has to file it?", "acceptedAnswer": { "@type": "Answer", "text": "SEC Form 4 is a mandatory disclosure required under Section 16(a) of the Securities Exchange Act of 1934. Any corporate insider — including officers such as the CEO, CFO, and COO, board members, and shareholders owning more than 10% of a public company — must file a Form 4 within two business days of any transaction involving that company's securities. The form discloses who traded, what was traded, how many shares, at what price, and the type of transaction." } },
+      { "@type": "Question", "name": "Is insider trading illegal? How is InsiderRadar different from illegal activity?", "acceptedAnswer": { "@type": "Answer", "text": "Not all insider trading is illegal. 'Insider trading' legally refers to corporate insiders — officers, directors, major shareholders — buying or selling their own company's stock. This is completely legal as long as it is done without relying on material non-public information (MNPI) and is properly reported to the SEC via Form 4. Illegal insider trading occurs when someone trades based on confidential tips or material information not yet public. InsiderRadar tracks the legal, publicly disclosed Form 4 filings that insiders are required to submit." } },
+      { "@type": "Question", "name": "How quickly does insider trading data appear on InsiderRadar?", "acceptedAnswer": { "@type": "Answer", "text": "Insiders must file Form 4 within two business days of a trade. InsiderRadar fetches data directly from SEC EDGAR, which publishes filings as soon as they are accepted — usually within hours of submission. Our API caches results for one hour to avoid rate-limiting the SEC's servers, so data may be up to one hour delayed from when it appears on EDGAR." } },
+      { "@type": "Question", "name": "What does the 'Unusual Activity' flag mean?", "acceptedAnswer": { "@type": "Answer", "text": "InsiderRadar flags an insider buy as 'unusual' when the total transaction value exceeds $500,000 in a single open-market purchase (Form 4 transaction code P). Large discretionary purchases — where an executive spends significant personal capital at market prices — are considered meaningfully different from routine stock awards or option exercises. The $500K threshold is a conservative filter designed to surface genuinely noteworthy activity." } },
+      { "@type": "Question", "name": "What is a 13F filing and which funds file them?", "acceptedAnswer": { "@type": "Answer", "text": "Form 13F-HR is a quarterly SEC filing required of institutional investment managers who exercise discretionary control over $100 million or more in qualifying US equity securities. This includes hedge funds, mutual funds, pension funds, family offices, and investment advisers. The filing must list all long equity positions and is due within 45 days after each calendar quarter ends. Short positions, non-US securities, and bonds are not included." } },
+      { "@type": "Question", "name": "Can I trust 13F data to know what a hedge fund currently holds?", "acceptedAnswer": { "@type": "Answer", "text": "13F data should be treated as a historical snapshot, not a current portfolio. Because filings are due 45 days after quarter-end, the most recent 13F you can see could reflect positions that are up to 135 days old (45 days delay plus up to 90 days in the quarter). A hedge fund could have fully exited a position and re-entered it multiple times since the filing date. Use 13F data to understand long-term conviction and portfolio structure, not to replicate trades in real time." } },
+      { "@type": "Question", "name": "Does InsiderRadar cover all US stocks?", "acceptedAnswer": { "@type": "Answer", "text": "InsiderRadar covers all US publicly traded companies that have Form 4 filings on SEC EDGAR. This includes NYSE, Nasdaq, and OTC-listed companies. Simply enter the company's stock ticker symbol in our search tool and we will pull the latest Form 4 data. If a company is not listed on EDGAR, it is likely not a US public company required to file with the SEC." } },
+      { "@type": "Question", "name": "Is InsiderRadar free? Do I need to sign up?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, InsiderRadar is completely free to use. There is no subscription, no account registration, and no paywall. All features — the insider trading tracker, unusual activity scanner, and hedge fund 13F viewer — are available without entering any personal information. The site is supported by display advertising." } },
+      { "@type": "Question", "name": "Where does InsiderRadar get its data?", "acceptedAnswer": { "@type": "Answer", "text": "All data on InsiderRadar is sourced directly from the US Securities and Exchange Commission's EDGAR system (Electronic Data Gathering, Analysis, and Retrieval). Specifically, we use the SEC EDGAR full-text search API for filing discovery, the data.sec.gov submissions endpoint for company filing indexes, and the EDGAR Archives for the actual Form 4 XML filing documents and 13F InfoTable XML files. No third-party data vendors are used." } },
+      { "@type": "Question", "name": "What is the difference between a 'Buy' and an 'Award' on a Form 4?", "acceptedAnswer": { "@type": "Answer", "text": "A 'Buy' (transaction code P) means the insider spent their own money to purchase shares at market price on the open market. This is a discretionary, voluntary investment decision. An 'Award' (transaction code A) means the company granted shares to the executive as part of their compensation package — the executive did not pay cash for these shares. Awards are not market signals because the insider did not choose to invest at the current price. InsiderRadar's unusual activity flags only apply to open-market purchases (code P)." } },
+      { "@type": "Question", "name": "How should I use insider trading data in my investment research?", "acceptedAnswer": { "@type": "Answer", "text": "Insider trading data works best as one input among many in a broader investment research process. It should not be used as the sole basis for buying or selling a stock. Strong signals include: multiple insiders buying within a short window, large purchases relative to the insider's historical activity, buys following a significant share price decline, and purchases by high-ranking officers rather than directors. Combine Form 4 signals with fundamental analysis, sector trends, and 13F institutional positioning for a more complete picture." } }
+    ]
+  }
+  </script>
+  <style>
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+    .faq-answer.open { max-height: 500px; }
+    .faq-icon { transition: transform 0.3s ease; }
+    .faq-icon.open { transform: rotate(45deg); }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans">
+
+  <div id="ezoic-pub-ad-placeholder-101"></div>
+
+  <nav class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-14">
+      <a href="/" class="flex items-center gap-2 font-bold text-lg">
+        <span class="text-emerald-400">&#9679;</span>
+        <span>Insider<span class="text-emerald-400">Radar</span></span>
+      </a>
+      <div class="hidden md:flex items-center gap-6 text-sm text-slate-300">
+        <a href="/" class="hover:text-white transition">Tracker</a>
+        <a href="/unusual-activity" class="hover:text-white transition">Unusual Activity</a>
+        <a href="/fund-tracker" class="hover:text-white transition">Fund Tracker</a>
+        <a href="/how-to-read-form4-13f" class="hover:text-white transition">Learn</a>
+        <a href="/blog" class="hover:text-white transition">Blog</a>
+        <a href="/faq" class="text-white font-medium">FAQ</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="bg-gradient-to-b from-slate-900 to-slate-950 py-10 px-4">
+    <div class="max-w-3xl mx-auto">
+      <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-3">Frequently Asked Questions</h1>
+      <p class="text-slate-400">The questions retail investors ask when they realize this data was always public — and they just weren't told.</p>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 py-10">
+    <div id="ezoic-pub-ad-placeholder-102" class="mb-8"></div>
+
+    <div id="faq-list" class="space-y-3"></div>
+
+    <div class="mt-10 bg-slate-900 border border-slate-800 rounded-xl p-6 text-center">
+      <p class="text-slate-400 text-sm mb-4">Have a question not answered here?</p>
+      <a href="/contact" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold px-5 py-2 rounded-lg text-sm transition">Contact Us</a>
+      <a href="/" class="ml-3 bg-slate-800 hover:bg-slate-700 text-white px-5 py-2 rounded-lg text-sm transition">Try the Tracker &rarr;</a>
+    </div>
+  </main>
+
+  <div class="max-w-3xl mx-auto px-4 pb-4">
+    <div id="ezoic-pub-ad-placeholder-103"></div>
+  </div>
+
+  <footer class="bg-slate-900 border-t border-slate-800 py-8 px-4 mt-4">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex flex-wrap gap-4 text-sm text-slate-400">
+        <a href="/" class="hover:text-white">Tracker</a>
+        <a href="/unusual-activity" class="hover:text-white">Unusual Activity</a>
+        <a href="/fund-tracker" class="hover:text-white">Fund Tracker</a>
+        <a href="/blog" class="hover:text-white">Blog</a>
+        <a href="/faq" class="hover:text-white">FAQ</a>
+        <a href="/methodology" class="hover:text-white">Methodology</a>
+        <a href="/privacy" class="hover:text-white">Privacy</a>
+        <a href="/contact" class="hover:text-white">Contact</a>
+      </div>
+      <p class="text-slate-600 text-xs text-center">This site is for informational purposes only. Not financial or investment advice. &copy; 2026 InsiderRadar.com</p>
+    </div>
+  </footer>
+
+  <script>
+    const faqs = [
+      { q: "What is SEC Form 4 and who has to file it?", a: "SEC Form 4 is a mandatory disclosure required under Section 16(a) of the Securities Exchange Act of 1934. Any corporate insider — including officers such as the CEO, CFO, and COO, board members, and shareholders owning more than 10% of a public company — must file a Form 4 within two business days of any transaction involving that company's securities. The form discloses who traded, what was traded, how many shares, at what price, and the type of transaction (open-market purchase, sale, award, option exercise, etc.)." },
+      { q: "Is insider trading illegal? How is InsiderRadar different from illegal activity?", a: "Not all insider trading is illegal. 'Insider trading' in the legal sense simply refers to corporate insiders — officers, directors, major shareholders — buying or selling their own company's stock. This is completely legal as long as it is done without relying on material non-public information (MNPI) and is properly reported to the SEC via Form 4. Illegal insider trading occurs when someone trades based on confidential tips or information not yet available to the public. InsiderRadar tracks the legal, publicly disclosed Form 4 filings that insiders are required by law to submit within 48 hours of any trade." },
+      { q: "How quickly does insider trading data appear on InsiderRadar?", a: "Insiders must file Form 4 within two business days of a trade. InsiderRadar fetches data directly from SEC EDGAR, which publishes filings as soon as they are accepted — usually within hours of submission. Our API caches results for one hour to avoid rate-limiting the SEC's servers, so data may be up to one hour delayed from when it appears on EDGAR. For the most recent possible data, you can visit the SEC EDGAR filing search directly at sec.gov." },
+      { q: "What does the 'Unusual Activity' flag mean?", a: "InsiderRadar flags an insider buy as 'unusual' when the total transaction value exceeds $500,000 in a single open-market purchase (Form 4 transaction code P). Large discretionary purchases — where an executive spends significant personal capital at market prices — are considered meaningfully different from routine stock awards or option exercises. The $500K threshold is a conservative filter designed to surface genuinely noteworthy activity rather than small routine transactions." },
+      { q: "What is a 13F filing and which funds file them?", a: "Form 13F-HR is a quarterly SEC filing required of institutional investment managers who exercise discretionary control over $100 million or more in qualifying US equity securities. This includes hedge funds, mutual funds, pension funds, family offices, and registered investment advisers. The filing must list all long equity positions and is due within 45 days after each calendar quarter ends. Short positions, non-US securities, bonds, and commodity positions are not required to be disclosed." },
+      { q: "Can I trust 13F data to know what a hedge fund currently holds?", a: "13F data should be treated as a historical snapshot, not a live portfolio feed. Because filings are due 45 days after quarter-end, the data could be up to 135 days old by the time you see it. A hedge fund could have fully exited a position and re-entered it multiple times since the filing date. Use 13F data to understand a fund's long-term investment thesis and sector conviction, not to replicate trades in real time." },
+      { q: "Does InsiderRadar cover all US stocks?", a: "InsiderRadar covers all US publicly traded companies that have Form 4 filings on SEC EDGAR. This includes NYSE, Nasdaq, and most OTC-listed companies. Simply enter the company's stock ticker symbol in our search tool and we will pull the latest Form 4 data directly from EDGAR. If a ticker returns no results, the company may not be required to file with the SEC or may have recently changed its ticker." },
+      { q: "Is InsiderRadar free? Do I need to sign up?", a: "Yes, InsiderRadar is completely free to use. There is no subscription, no account registration, and no paywall. All features — the insider trading tracker, unusual activity scanner, and hedge fund 13F viewer — are available without entering any personal information. The site is supported by display advertising. We believe this type of information should be freely accessible to all investors, not locked behind expensive subscriptions." },
+      { q: "Where does InsiderRadar get its data?", a: "All data on InsiderRadar is sourced directly from the US Securities and Exchange Commission's EDGAR system. Specifically, we use the SEC EDGAR full-text search API for filing discovery, the data.sec.gov submissions API for company filing indexes, and the EDGAR Archives for the actual Form 4 XML filings and 13F InfoTable XML documents. No third-party data vendors or intermediaries are used — you are seeing the same raw government data that institutional investors use, just presented in a cleaner interface." },
+      { q: "What is the difference between a 'Buy' and an 'Award' on a Form 4?", a: "A 'Buy' (transaction code P) means the insider spent their own money to purchase shares at market price on the open market — this is a discretionary, voluntary investment decision that signals personal conviction. An 'Award' (transaction code A) means the company granted shares to the executive as part of their compensation package; the executive did not pay cash for these shares. Awards are not market signals because the insider did not choose to invest at the current price. InsiderRadar's unusual activity flags only apply to open-market purchases (code P), never to awards or option exercises." },
+      { q: "How should I use insider trading data in my investment research?", a: "Insider trading data works best as one input in a broader investment research process. Strong positive signals include: multiple insiders buying within a short window, large purchases relative to the insider's historical activity or annual salary, buys following a significant share price decline, and purchases by high-ranking officers rather than outside directors. Always combine Form 4 signals with fundamental analysis, sector trends, and 13F institutional positioning. This site is for informational purposes only and nothing here constitutes financial advice." }
+    ];
+
+    const list = document.getElementById('faq-list');
+    list.innerHTML = faqs.map((f, i) => `
+      <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+        <button
+          id="faq-btn-${i}"
+          onclick="toggleFaq(${i})"
+          class="w-full text-left px-5 py-4 flex items-center justify-between hover:bg-slate-800/50 transition"
+          aria-expanded="false"
+        >
+          <span class="font-semibold text-white text-sm pr-4">${f.q}</span>
+          <span id="faq-icon-${i}" class="faq-icon text-emerald-400 text-xl shrink-0">+</span>
+        </button>
+        <div id="faq-ans-${i}" class="faq-answer">
+          <p class="px-5 pb-5 text-slate-400 text-sm leading-relaxed">${f.a}</p>
+        </div>
+      </div>
+    `).join('');
+
+    function toggleFaq(i) {
+      const ans  = document.getElementById(`faq-ans-${i}`);
+      const icon = document.getElementById(`faq-icon-${i}`);
+      const btn  = document.getElementById(`faq-btn-${i}`);
+      const isOpen = ans.classList.contains('open');
+      // Close all
+      document.querySelectorAll('.faq-answer').forEach(el => el.classList.remove('open'));
+      document.querySelectorAll('.faq-icon').forEach(el => el.classList.remove('open'));
+      document.querySelectorAll('[id^="faq-btn-"]').forEach(el => el.setAttribute('aria-expanded','false'));
+      if (!isOpen) {
+        ans.classList.add('open');
+        icon.classList.add('open');
+        btn.setAttribute('aria-expanded','true');
+      }
+    }
+  </script>
+</body>
+</html>
