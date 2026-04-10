@@ -1,15 +1,1 @@
-{
-  "rewrites": [
-    { "source": "/unusual-activity", "destination": "/unusual-activity.html" },
-    { "source": "/fund-tracker", "destination": "/fund-tracker.html" },
-    { "source": "/how-to-read-form4-13f", "destination": "/how-to-read-form4-13f.html" },
-    { "source": "/about", "destination": "/about.html" },
-    { "source": "/faq", "destination": "/faq.html" },
-    { "source": "/blog", "destination": "/blog.html" },
-    { "source": "/blog/what-is-form-4", "destination": "/blog/what-is-form-4.html" },
-    { "source": "/blog/how-to-track-13f", "destination": "/blog/how-to-track-13f.html" },
-    { "source": "/methodology", "destination": "/methodology.html" },
-    { "source": "/privacy", "destination": "/privacy.html" },
-    { "source": "/contact", "destination": "/contact.html" }
-  ]
-}
+{}

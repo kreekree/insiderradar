@@ -1,0 +1,107 @@
+{
+  "pages": {
+    "/_not-found/page": [
+      "static/chunks/webpack-6da7c77b469d51ac.js",
+      "static/chunks/fd9d1056-4a917af64af6b262.js",
+      "static/chunks/23-564dff0a59655339.js",
+      "static/chunks/main-app-1a180bf4d089427b.js",
+      "static/chunks/app/_not-found/page-b0486616258356d1.js"
+    ],
+    "/layout": [
+      "static/chunks/webpack-6da7c77b469d51ac.js",
+      "static/chunks/fd9d1056-4a917af64af6b262.js",
+      "static/chunks/23-564dff0a59655339.js",
+      "static/chunks/main-app-1a180bf4d089427b.js",
+      "static/css/53b3bbdb6f95b982.css",
+      "static/chunks/231-28d4b6baeee19f30.js",
+      "static/chunks/app/layout-a5914c4289d84684.js"
+    ],
+    "/fund-tracker/page": [
+      "static/chunks/webpack-6da7c77b469d51ac.js",
+      "static/chunks/fd9d1056-4a917af64af6b262.js",
+      "static/chunks/23-564dff0a59655339.js",
+      "static/chunks/main-app-1a180bf4d089427b.js",
+      "static/chunks/555-1afda9bdd353c039.js",
+      "static/chunks/app/fund-tracker/page-c015d963758b69eb.js"
+    ],
+    "/faq/page": [
+      "static/chunks/webpack-6da7c77b469d51ac.js",
+      "static/chunks/fd9d1056-4a917af64af6b262.js",
+      "static/chunks/23-564dff0a59655339.js",
+      "static/chunks/main-app-1a180bf4d089427b.js",
+      "static/chunks/app/faq/page-2eb5c59af9ac50c3.js"
+    ],
+    "/page": [
+      "static/chunks/webpack-6da7c77b469d51ac.js",
+      "static/chunks/fd9d1056-4a917af64af6b262.js",
+      "static/chunks/23-564dff0a59655339.js",
+      "static/chunks/main-app-1a180bf4d089427b.js",
+      "static/chunks/555-1afda9bdd353c039.js",
+      "static/chunks/app/page-757f1104c78059dd.js"
+    ],
+    "/blog/page": [
+      "static/chunks/webpack-6da7c77b469d51ac.js",
+      "static/chunks/fd9d1056-4a917af64af6b262.js",
+      "static/chunks/23-564dff0a59655339.js",
+      "static/chunks/main-app-1a180bf4d089427b.js",
+      "static/chunks/231-28d4b6baeee19f30.js",
+      "static/chunks/app/blog/page-044824b383acf823.js"
+    ],
+    "/about/page": [
+      "static/chunks/webpack-6da7c77b469d51ac.js",
+      "static/chunks/fd9d1056-4a917af64af6b262.js",
+      "static/chunks/23-564dff0a59655339.js",
+      "static/chunks/main-app-1a180bf4d089427b.js",
+      "static/chunks/app/about/page-c1fcce512cbb1b7d.js"
+    ],
+    "/contact/page": [
+      "static/chunks/webpack-6da7c77b469d51ac.js",
+      "static/chunks/fd9d1056-4a917af64af6b262.js",
+      "static/chunks/23-564dff0a59655339.js",
+      "static/chunks/main-app-1a180bf4d089427b.js",
+      "static/chunks/app/contact/page-822ade4fc29e6df1.js"
+    ],
+    "/blog/how-to-track-13f/page": [
+      "static/chunks/webpack-6da7c77b469d51ac.js",
+      "static/chunks/fd9d1056-4a917af64af6b262.js",
+      "static/chunks/23-564dff0a59655339.js",
+      "static/chunks/main-app-1a180bf4d089427b.js",
+      "static/chunks/app/blog/how-to-track-13f/page-c0d2def5e29986fe.js"
+    ],
+    "/privacy/page": [
+      "static/chunks/webpack-6da7c77b469d51ac.js",
+      "static/chunks/fd9d1056-4a917af64af6b262.js",
+      "static/chunks/23-564dff0a59655339.js",
+      "static/chunks/main-app-1a180bf4d089427b.js",
+      "static/chunks/app/privacy/page-7607481403d26431.js"
+    ],
+    "/blog/what-is-form-4/page": [
+      "static/chunks/webpack-6da7c77b469d51ac.js",
+      "static/chunks/fd9d1056-4a917af64af6b262.js",
+      "static/chunks/23-564dff0a59655339.js",
+      "static/chunks/main-app-1a180bf4d089427b.js",
+      "static/chunks/app/blog/what-is-form-4/page-b7d96fb82cef2876.js"
+    ],
+    "/methodology/page": [
+      "static/chunks/webpack-6da7c77b469d51ac.js",
+      "static/chunks/fd9d1056-4a917af64af6b262.js",
+      "static/chunks/23-564dff0a59655339.js",
+      "static/chunks/main-app-1a180bf4d089427b.js",
+      "static/chunks/app/methodology/page-c33e695750928071.js"
+    ],
+    "/how-to-read-form4-13f/page": [
+      "static/chunks/webpack-6da7c77b469d51ac.js",
+      "static/chunks/fd9d1056-4a917af64af6b262.js",
+      "static/chunks/23-564dff0a59655339.js",
+      "static/chunks/main-app-1a180bf4d089427b.js",
+      "static/chunks/app/how-to-read-form4-13f/page-813a8be15c7bac6c.js"
+    ],
+    "/unusual-activity/page": [
+      "static/chunks/webpack-6da7c77b469d51ac.js",
+      "static/chunks/fd9d1056-4a917af64af6b262.js",
+      "static/chunks/23-564dff0a59655339.js",
+      "static/chunks/main-app-1a180bf4d089427b.js",
+      "static/chunks/app/unusual-activity/page-3dc37f048ad4e4f3.js"
+    ]
+  }
+}

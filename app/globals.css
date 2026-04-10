@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-slate-950 text-slate-100 min-h-screen;
+  }
+}
+
+@layer components {
+  .badge-buy {
+    @apply border border-emerald-500 text-emerald-400 bg-emerald-500/10 font-mono text-[0.65rem] font-semibold px-1.5 py-0.5 rounded tracking-wide;
+  }
+  .badge-sell {
+    @apply border border-red-500 text-red-400 bg-red-500/10 font-mono text-[0.65rem] font-semibold px-1.5 py-0.5 rounded tracking-wide;
+  }
+  .badge-other {
+    @apply border border-slate-600 text-slate-400 bg-slate-500/10 font-mono text-[0.65rem] font-semibold px-1.5 py-0.5 rounded tracking-wide;
+  }
+  .badge-unusual {
+    @apply border border-amber-500 text-amber-400 bg-amber-500/10 font-mono text-[0.65rem] font-semibold px-1.5 py-0.5 rounded tracking-wide;
+  }
+  .row-buy  { @apply border-l-[3px] border-l-emerald-500; }
+  .row-sell { @apply border-l-[3px] border-l-red-500; }
+  .row-other { @apply border-l-[3px] border-l-slate-700; }
+
+  .sortable { @apply cursor-pointer select-none; }
+  .sortable::after { content: ' ↕'; opacity: 0.4; }
+  .sortable.asc::after  { content: ' ↑'; opacity: 1; }
+  .sortable.desc::after { content: ' ↓'; opacity: 1; }
+}
+
+/* Scanning loader */
+.scan-track { position: relative; overflow: hidden; width: 200px; height: 2px; background: #1e293b; border-radius: 2px; }
+.scan-bar   { position: absolute; top: 0; left: 0; width: 40%; height: 100%; background: linear-gradient(90deg, transparent, #10b981, transparent); border-radius: 2px; animation: scan 1.4s ease-in-out infinite; }
+@keyframes scan { 0% { transform: translateX(-100%); } 100% { transform: translateX(350%); } }
