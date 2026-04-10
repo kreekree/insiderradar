@@ -16,6 +16,7 @@
 
   <script src="//www.ezojs.com/ezoic/sa.min.js" async></script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -27,8 +28,13 @@
   }
   </script>
   <style>
-    .row-enter { animation: fadeIn 0.3s ease; }
-    @keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
+    .data-mono { font-family: 'JetBrains Mono', monospace; }
+    .row-enter { animation: fadeIn 0.25s ease; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(3px); } to { opacity:1; transform:none; } }
+    /* Scanning loader */
+    .scan-track { position: relative; overflow: hidden; width: 200px; height: 2px; background: #1e293b; border-radius: 2px; }
+    .scan-bar   { position: absolute; top: 0; left: 0; width: 40%; height: 100%; background: linear-gradient(90deg, transparent, #f59e0b, transparent); border-radius: 2px; animation: scan 1.4s ease-in-out infinite; }
+    @keyframes scan { 0% { transform: translateX(-100%); } 100% { transform: translateX(350%); } }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen font-sans">
@@ -71,9 +77,9 @@
 
     <!-- Loading -->
     <div id="loading" class="text-center py-16">
-      <div class="inline-block w-8 h-8 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mb-3"></div>
+      <div class="flex justify-center mb-4"><div class="scan-track"><div class="scan-bar"></div></div></div>
       <p class="text-slate-400 text-sm">Scanning recent Form 4 filings — looking for the moves that matter…</p>
-      <p class="text-slate-600 text-xs mt-1">Parsing SEC XML directly. Takes 10–20 seconds. Worth it.</p>
+      <p class="text-slate-600 text-xs mt-1 data-mono">parsing sec xml · filtering $500k+ buys · sorting by value</p>
     </div>
 
     <!-- Error -->
@@ -198,10 +204,10 @@
               </td>
               <td class="px-4 py-3 text-slate-200 text-xs">${sanitize(t.ownerName)}</td>
               <td class="px-4 py-3 text-slate-400 text-xs">${sanitize(t.title)}</td>
-              <td class="px-4 py-3 text-center text-slate-400 text-xs whitespace-nowrap">${sanitize(t.date)}</td>
-              <td class="px-4 py-3 text-right text-slate-300 text-xs">${fmtNum(t.shares)}</td>
-              <td class="px-4 py-3 text-right text-slate-300 text-xs">${fmtPrice(t.price)}</td>
-              <td class="px-4 py-3 text-right font-bold text-emerald-400 text-xs">${fmtMoney(t.value)}</td>
+              <td class="px-4 py-3 text-center text-slate-400 data-mono text-xs whitespace-nowrap">${sanitize(t.date)}</td>
+              <td class="px-4 py-3 text-right text-slate-300 data-mono text-xs">${fmtNum(t.shares)}</td>
+              <td class="px-4 py-3 text-right text-slate-300 data-mono text-xs">${fmtPrice(t.price)}</td>
+              <td class="px-4 py-3 text-right font-bold text-emerald-400 data-mono text-xs">${fmtMoney(t.value)}</td>
             </tr>
           `).join('');
         }
