@@ -29,7 +29,7 @@ function xmlBlocks(xml, tag) {
 // Step 1: Get recent Form 4 filings via EFTS full-text search
 async function getForm4Filings(cikPadded) {
   const startdt = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
-  const url = `https://efts.sec.gov/LATEST/search-index?q=%22${cikPadded}%22&forms=4&dateRange=custom&startdt=${startdt}&from=0&size=20`;
+  const url = `https://efts.sec.gov/LATEST/search-index?q=%22${cikPadded}%22&forms=4&dateRange=custom&startdt=${startdt}&from=0&size=12`;
   const res = await fetch(url, { headers: { 'User-Agent': UA } });
   if (!res.ok) throw new Error(`EFTS: ${res.status}`);
   const data = await res.json();
@@ -96,8 +96,19 @@ async function parseForm4Xml(xmlUrl, filingDate) {
   }
 }
 
-// Small delay helper to stay under SEC rate limit (10 req/s)
 const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+// Process in batches to stay under SEC rate limit while being fast
+async function processBatched(filings, batchSize = 4, delayMs = 300) {
+  const results = [];
+  for (let i = 0; i < filings.length; i += batchSize) {
+    const batch = filings.slice(i, i + batchSize).filter(f => f.xmlUrl);
+    const batchResults = await Promise.all(batch.map(f => parseForm4Xml(f.xmlUrl, f.date)));
+    results.push(...batchResults.flat());
+    if (i + batchSize < filings.length) await sleep(delayMs);
+  }
+  return results;
+}
 
 export default async function handler(req, res) {
   const cik = (req.query.cik || '').replace(/^0+/, '');
@@ -114,14 +125,8 @@ export default async function handler(req, res) {
     if (!subRes.ok) throw new Error('submissions fetch failed');
     const sub = await subRes.json();
 
-    // Process sequentially to avoid SEC rate limiting (429)
-    const trades = [];
-    for (const f of filings) {
-      if (!f.xmlUrl) continue;
-      const txns = await parseForm4Xml(f.xmlUrl, f.date);
-      trades.push(...txns);
-      await sleep(150); // ~6 req/s — comfortably under 10 req/s limit
-    }
+    // 4 parallel per batch, 300ms between batches — fast but under SEC's 10 req/s limit
+    const trades = await processBatched(filings);
 
     trades.sort((a, b) => (b.date > a.date ? 1 : -1));
 
