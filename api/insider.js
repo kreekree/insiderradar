@@ -1,9 +1,4 @@
 // api/insider.js — Fetch Form 4 insider trades for a given issuer CIK
-//
-// Strategy: use EDGAR EFTS full-text search to find Form 4 filings that
-// contain the issuer's CIK, then parse each filing's XML for transactions.
-// The first 10 digits of an accession number are always the filer's CIK,
-// so we can construct exact Archives URLs without any HTML/Atom parsing.
 
 const UA = 'InsiderRadar contact@insiderradar.com';
 
@@ -27,95 +22,103 @@ function xmlBlocks(xml, tag) {
   return blocks;
 }
 
-// Step 1: EFTS full-text search for Form 4 filings mentioning this CIK
+// Step 1: EDGAR company search Atom feed — finds Form 4s WHERE this company is the ISSUER
 async function getForm4Filings(cikPadded) {
-  const startdt = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000)
-    .toISOString().slice(0, 10);
-
-  // Quote the CIK for exact-phrase match — issuer CIK appears verbatim in Form 4 XML
-  const url = `https://efts.sec.gov/LATEST/search-index?q=%22${cikPadded}%22&forms=4&dateRange=custom&startdt=${startdt}&from=0&size=20`;
-  console.log('[insider] EFTS URL:', url);
-
+  const url = `https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${cikPadded}&type=4&dateb=&owner=include&count=20&search_text=&output=atom`;
+  console.log('[insider] Fetching:', url);
   const res = await fetch(url, { headers: { 'User-Agent': UA } });
-  if (!res.ok) throw new Error(`EFTS search failed: ${res.status}`);
-  const data = await res.json();
+  if (!res.ok) throw new Error(`EDGAR Atom: ${res.status}`);
+  const atom = await res.text();
 
-  const hits = data.hits?.hits || [];
-  console.log('[insider] EFTS hits:', hits.length);
-  if (hits.length > 0) console.log('[insider] Sample hit:', JSON.stringify(hits[0]).substring(0, 300));
+  // Log enough of the raw feed to diagnose structure
+  console.log('[insider] Atom length:', atom.length);
+  console.log('[insider] Atom[0-600]:', atom.substring(0, 600));
 
-  return hits.map(hit => {
-    // _id is the accession number, e.g. "0001234567-24-001234"
-    const accNo = hit._id;
-    const accNoDashes = accNo.replace(/-/g, '');
-    // First 10 chars of accNoDashes = padded filer CIK (the insider who filed)
-    const filerCikPadded = accNoDashes.substring(0, 10);
-    const filerCik = filerCikPadded.replace(/^0+/, '') || filerCikPadded;
-    const date = hit._source?.file_date || hit._source?.period_of_report || '';
+  const filings = [];
+  const entryRe = /<entry>([\s\S]*?)<\/entry>/gi;
+  let m;
 
-    return {
-      href: `https://www.sec.gov/Archives/edgar/data/${filerCik}/${accNoDashes}/${accNo}-index.htm`,
-      filerCik,
-      accNoDashes,
-      accNo,
-      date
-    };
-  });
+  while ((m = entryRe.exec(atom)) !== null && filings.length < 15) {
+    const entry = m[1];
+    console.log('[insider] entry[0-400]:', entry.substring(0, 400));
+
+    // Try to find an Archives filing URL (contains /Archives/edgar/data/{cik}/{accNo}/)
+    const archivesRe = /https?:\/\/[^"'\s]*\/Archives\/edgar\/data\/(\d+)\/(\d{18})\/([^"'\s<>]*)/i;
+    const archivesMatch = entry.match(archivesRe);
+
+    // Extract accession number in dash format: XXXXXXXXXX-YY-ZZZZZZ
+    const accRe = /(\d{10}-\d{2}-\d{6})/;
+    const accMatch = entry.match(accRe);
+
+    // Extract date
+    const dateMatch = entry.match(/<filing-date>([^<]+)<\/filing-date>/i)
+                   || entry.match(/<updated>(\d{4}-\d{2}-\d{2})/i);
+    const date = dateMatch ? dateMatch[1].trim() : '';
+
+    if (archivesMatch) {
+      const filerCik = archivesMatch[1];
+      const accNoDashes = archivesMatch[2];
+      const accNo = `${accNoDashes.slice(0,10)}-${accNoDashes.slice(10,12)}-${accNoDashes.slice(12)}`;
+      console.log('[insider] found via archives URL:', filerCik, accNo, date);
+      filings.push({ filerCik, accNoDashes, accNo, date });
+    } else if (accMatch) {
+      // Build from accession number: first 10 digits = filer CIK
+      const accNo = accMatch[1];
+      const accNoDashes = accNo.replace(/-/g, '');
+      const filerCik = accNoDashes.slice(0, 10).replace(/^0+/, '') || accNoDashes.slice(0, 10);
+      console.log('[insider] found via accNo fallback:', filerCik, accNo, date);
+      filings.push({ filerCik, accNoDashes, accNo, date });
+    } else {
+      console.log('[insider] no match in entry');
+    }
+  }
+
+  console.log('[insider] Total filings:', filings.length);
+  return filings;
 }
 
-// Step 2: From filing index URL, find the XML document URL
+// Step 2: Get the XML file URL from the filing index
 async function getXmlUrlFromIndex(filing) {
   const jsonUrl = `https://www.sec.gov/Archives/edgar/data/${filing.filerCik}/${filing.accNoDashes}/${filing.accNo}-index.json`;
   console.log('[insider] index.json:', jsonUrl);
-
   try {
     const res = await fetch(jsonUrl, { headers: { 'User-Agent': UA } });
     if (!res.ok) {
-      console.log('[insider] index.json failed:', res.status);
-      // Fallback: try the .htm index and derive XML path from accession number
-      return `https://www.sec.gov/Archives/edgar/data/${filing.filerCik}/${filing.accNoDashes}/${filing.accNo}.xml`;
+      console.log('[insider] index.json status:', res.status);
+      return null;
     }
     const idx = await res.json();
     const items = idx.directory?.item || [];
-    console.log('[insider] items:', items.map(i => i.name).join(', '));
-
-    // Prefer the primary Form 4 XML (not index, not R-prefixed XBRL files)
     const xmlFile = items.find(f =>
       f.name.endsWith('.xml') &&
       !f.name.toLowerCase().includes('index') &&
       !f.name.match(/^R\d/)
     );
     if (!xmlFile) return null;
-
-    const base = `https://www.sec.gov/Archives/edgar/data/${filing.filerCik}/${filing.accNoDashes}/`;
-    return base + xmlFile.name;
+    return `https://www.sec.gov/Archives/edgar/data/${filing.filerCik}/${filing.accNoDashes}/${xmlFile.name}`;
   } catch (e) {
     console.log('[insider] index.json error:', e.message);
     return null;
   }
 }
 
-// Step 3: Parse transaction data from Form 4 XML
+// Step 3: Parse Form 4 XML for transactions
 async function parseForm4Xml(xmlUrl, filingDate) {
   try {
     const res = await fetch(xmlUrl, { headers: { 'User-Agent': UA } });
-    if (!res.ok) {
-      console.log('[insider] XML fetch failed:', res.status, xmlUrl);
-      return [];
-    }
+    if (!res.ok) return [];
     const xml = await res.text();
 
     const ownerName    = xmlVal(xml, 'rptOwnerName') || 'Unknown';
     const isOfficer    = xml.includes('<isOfficer>1</isOfficer>');
     const isDirector   = xml.includes('<isDirector>1</isDirector>');
-    const officerTitle = isOfficer
-      ? (xmlVal(xml, 'officerTitle') || 'Officer')
-      : isDirector ? 'Director' : 'Other';
+    const officerTitle = isOfficer ? (xmlVal(xml, 'officerTitle') || 'Officer')
+                       : isDirector ? 'Director' : 'Other';
     const issuerTicker = xmlVal(xml, 'issuerTradingSymbol') || '';
     const period       = xmlVal(xml, 'periodOfReport') || filingDate;
 
     const blocks = xmlBlocks(xml, 'nonDerivativeTransaction');
-    console.log('[insider]', ownerName, '→', blocks.length, 'nonDerivative blocks');
+    console.log('[insider]', ownerName, blocks.length, 'blocks');
 
     const transactions = [];
     for (const block of blocks) {
@@ -126,53 +129,33 @@ async function parseForm4Xml(xmlUrl, filingDate) {
       const sharesAfter = parseFloat(xmlVal(block, 'sharesOwnedFollowingTransaction') || '0');
       const security    = xmlVal(block, 'securityTitle') || 'Common Stock';
       const acqDisp     = xmlVal(block, 'transactionAcquiredDisposedCode') || '';
-
       if (!shares) continue;
-
-      transactions.push({
-        ownerName,
-        title: officerTitle,
-        ticker: issuerTicker,
-        date,
-        code,
-        label: TX_CODE[code] || code,
-        shares,
-        price,
-        value: Math.round(shares * price),
-        sharesAfter,
-        security,
-        acqDisp
-      });
+      transactions.push({ ownerName, title: officerTitle, ticker: issuerTicker, date,
+        code, label: TX_CODE[code] || code, shares, price,
+        value: Math.round(shares * price), sharesAfter, security, acqDisp });
     }
     return transactions;
   } catch (e) {
-    console.log('[insider] parseForm4Xml error:', e.message);
+    console.log('[insider] parseXml error:', e.message);
     return [];
   }
 }
 
 export default async function handler(req, res) {
   const cik = (req.query.cik || '').replace(/^0+/, '');
-
   if (!cik || !/^\d+$/.test(cik)) {
-    return res.status(400).json({ error: 'cik query parameter required (numeric)' });
+    return res.status(400).json({ error: 'cik required (numeric)' });
   }
-
   const cikPadded = cik.padStart(10, '0');
-  console.log('[insider] handler for CIK:', cikPadded);
+  console.log('[insider] CIK:', cikPadded);
 
   try {
     const [subRes, filings] = await Promise.all([
-      fetch(`https://data.sec.gov/submissions/CIK${cikPadded}.json`, {
-        headers: { 'User-Agent': UA }
-      }),
+      fetch(`https://data.sec.gov/submissions/CIK${cikPadded}.json`, { headers: { 'User-Agent': UA } }),
       getForm4Filings(cikPadded)
     ]);
-
-    if (!subRes.ok) throw new Error('SEC submissions fetch failed');
+    if (!subRes.ok) throw new Error('submissions fetch failed');
     const sub = await subRes.json();
-
-    console.log('[insider]', sub.name, '— processing', filings.length, 'filings');
 
     const results = await Promise.all(
       filings.map(async f => {
@@ -180,25 +163,17 @@ export default async function handler(req, res) {
           const xmlUrl = await getXmlUrlFromIndex(f);
           if (!xmlUrl) return [];
           return await parseForm4Xml(xmlUrl, f.date);
-        } catch (e) {
-          console.log('[insider] filing error:', e.message);
-          return [];
-        }
+        } catch { return []; }
       })
     );
 
     const trades = results.flat().sort((a, b) => (b.date > a.date ? 1 : -1));
-    console.log('[insider] total trades:', trades.length);
+    console.log('[insider] trades:', trades.length);
 
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=600');
-    return res.json({
-      company: sub.name,
-      cik,
-      ticker: sub.tickers?.[0] || '',
-      trades
-    });
+    return res.json({ company: sub.name, cik, ticker: sub.tickers?.[0] || '', trades });
   } catch (err) {
     console.error('[insider] error:', err.message);
-    return res.status(500).json({ error: err.message || 'Failed to fetch insider trades' });
+    return res.status(500).json({ error: err.message });
   }
 }
