@@ -30,14 +30,11 @@ function xmlBlocks(xml, tag) {
 async function getForm4Filings(cikPadded) {
   const startdt = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
   const url = `https://efts.sec.gov/LATEST/search-index?q=%22${cikPadded}%22&forms=4&dateRange=custom&startdt=${startdt}&from=0&size=20`;
-  console.log('[insider] EFTS:', url);
-
   const res = await fetch(url, { headers: { 'User-Agent': UA } });
   if (!res.ok) throw new Error(`EFTS: ${res.status}`);
   const data = await res.json();
 
   const hits = data.hits?.hits || [];
-  console.log('[insider] hits:', hits.length);
 
   return hits.map(hit => {
     // _id is "{accNo}:{xmlFilename}" — split on first colon only
@@ -56,7 +53,6 @@ async function getForm4Filings(cikPadded) {
       ? `https://www.sec.gov/Archives/edgar/data/${filerCik}/${accNoDashes}/${xmlFilename}`
       : null;
 
-    console.log('[insider] filing:', accNo, filerCik, xmlFilename, date);
     return { filerCik, accNoDashes, accNo, xmlUrl, date };
   });
 }
@@ -65,10 +61,7 @@ async function getForm4Filings(cikPadded) {
 async function parseForm4Xml(xmlUrl, filingDate) {
   try {
     const res = await fetch(xmlUrl, { headers: { 'User-Agent': UA } });
-    if (!res.ok) {
-      console.log('[insider] XML', res.status, xmlUrl.split('/').slice(-1)[0]);
-      return [];
-    }
+    if (!res.ok) return [];
     const xml = await res.text();
 
     const ownerName    = xmlVal(xml, 'rptOwnerName') || 'Unknown';
@@ -80,7 +73,6 @@ async function parseForm4Xml(xmlUrl, filingDate) {
     const period       = xmlVal(xml, 'periodOfReport') || filingDate;
 
     const blocks = xmlBlocks(xml, 'nonDerivativeTransaction');
-    console.log('[insider]', ownerName, '→', blocks.length, 'txns');
 
     const transactions = [];
     for (const block of blocks) {
@@ -99,8 +91,7 @@ async function parseForm4Xml(xmlUrl, filingDate) {
       });
     }
     return transactions;
-  } catch (e) {
-    console.log('[insider] parse error:', e.message);
+  } catch {
     return [];
   }
 }
@@ -114,7 +105,6 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'cik required (numeric)' });
   }
   const cikPadded = cik.padStart(10, '0');
-  console.log('[insider] CIK:', cikPadded);
 
   try {
     const [subRes, filings] = await Promise.all([
@@ -123,7 +113,6 @@ export default async function handler(req, res) {
     ]);
     if (!subRes.ok) throw new Error('submissions fetch failed');
     const sub = await subRes.json();
-    console.log('[insider]', sub.name, filings.length, 'filings');
 
     // Process sequentially to avoid SEC rate limiting (429)
     const trades = [];
@@ -135,12 +124,11 @@ export default async function handler(req, res) {
     }
 
     trades.sort((a, b) => (b.date > a.date ? 1 : -1));
-    console.log('[insider] total trades:', trades.length);
 
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=600');
     return res.json({ company: sub.name, cik, ticker: sub.tickers?.[0] || '', trades });
   } catch (err) {
-    console.error('[insider] error:', err.message);
+    console.error('insider error:', err.message);
     return res.status(500).json({ error: err.message });
   }
 }
